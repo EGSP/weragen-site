@@ -1,871 +1,236 @@
 ---
 /**
- * Версия 2, «Витрина».
+ * Вариант 2, "Плакат".
  *
- * Порядок разделов повторяет страницу продукта JetBrains: крупный заголовок с видом
- * продукта, возможности парами «текст и изображение», главное утверждение с сеткой
- * небольших возможностей, раздел для организации на перевёрнутом фоне, пример, призыв
- * к действию и подробный подвал. Оформление при этом остаётся чёрно-белым и лёгким.
+ * Страница набрана как плакат: каждое утверждение стоит отдельно и занимает почти весь
+ * экран по ширине, пояснение к нему умещается в одну строку рядом. Карточек, схем и линий
+ * нет, ритм создают только размер шрифта и пустое место.
  */
 import Base from '../../layouts/Base.astro';
-import Frame from '../../components/Frame.astro';
-import HubDiagram from '../../components/HubDiagram.astro';
-import JournalMock from '../../components/JournalMock.astro';
-import AliasMock from '../../components/AliasMock.astro';
-import QueueMock from '../../components/QueueMock.astro';
-import RegistryMock from '../../components/RegistryMock.astro';
-import GraphMock from '../../components/GraphMock.astro';
-import CodeSample from '../../components/CodeSample.astro';
 import { withBase } from '../../lib/url';
 import { typograph as t } from '../../lib/typograph';
-import {
-    site,
-    hero,
-    highlights,
-    problem,
-    feature,
-    details,
-    sample,
-    security,
-    example,
-    nonGoals,
-    status,
-    openSource,
-    cta,
-} from '../../data/content';
-
-const navigation = [
-    { id: 'features', label: 'Возможности' },
-    { id: 'organization', label: 'Организации' },
-    { id: 'example', label: 'Пример' },
-    { id: 'open', label: 'Открытый код' },
-];
-
-const rows = [
-    { item: feature('models'), visual: 'alias', frame: 'Псевдонимы моделей' },
-    { item: feature('limits'), visual: 'queue', frame: 'Очередь запросов' },
-    { item: feature('hub'), visual: 'registry', frame: 'Подключено к платформе' },
-    { item: feature('workflows'), visual: 'graph', frame: 'Граф воркфлоу' },
-] as const;
-
-const number = (index: number): string => String(index + 1).padStart(2, '0');
+import { site, poster, nonGoals } from '../../data/content';
 ---
 
 <Base title={site.title} description={site.description} version={2}>
     <div class="page">
-        <header class="head">
-            <div class="container head__inner">
-                <a class="head__mark" href={withBase('/v2/')}>weragen</a>
-                <nav class="head__nav" aria-label="Разделы страницы">
-                    {navigation.map((item) => <a href={`#${item.id}`}>{item.label}</a>)}
-                </nav>
-                <a class="button button--solid head__button" href={site.repository}>GitHub</a>
-            </div>
+        <header class="top container">
+            <a class="mark" href={withBase('/v2/')}>weragen</a>
+            <a class="top__link" href={site.repository}>GitHub</a>
         </header>
 
         <main>
-            <section class="hero">
-                <div class="container hero__grid">
-                    <div>
-                        <p class="eyebrow mono">{hero.status}</p>
-                        <h1>{t(hero.heading)}</h1>
-                        <p class="hero__lead">{t(hero.lead)}</p>
-                        <div class="actions">
-                            <a class="button button--solid" href={site.repository}>{hero.primary}</a>
-                            <a class="button button--outline" href="#open">{hero.secondary}</a>
-                        </div>
-                    </div>
-                    <div class="hero__visual">
-                        <Frame title="Журнал исполнения">
-                            <JournalMock />
-                        </Frame>
-                    </div>
+            <section class="hero container">
+                <h1>{site.headingStart} <span class="keep">{site.headingEnd}</span></h1>
+                <p class="hero__lead">{t(poster.lead)}</p>
+                <div class="actions">
+                    <a class="button button--solid" href={site.repository}>{site.primary}</a>
+                    <a class="button button--outline" href="#contact">{site.secondary}</a>
                 </div>
-                <ul class="container highlights">
-                    {
-                        highlights.map((item) => (
-                            <li>
-                                <strong>{t(item.title)}</strong>
-                                <span>{t(item.text)}</span>
-                            </li>
-                        ))
-                    }
-                </ul>
             </section>
 
-            <section class="problem container">
-                <div class="section-head">
-                    <p class="eyebrow mono">Зачем</p>
-                    <h2>{t(problem.title)}</h2>
-                    <p class="section-head__lead">{t(problem.intro)}</p>
-                </div>
-                <ul class="cards cards--four">
-                    {
-                        problem.items.map((item, index) => (
-                            <li>
-                                <p class="cards__index mono">{number(index)}</p>
-                                <h3>{t(item.title)}</h3>
-                                <p>{t(item.text)}</p>
-                            </li>
-                        ))
-                    }
-                </ul>
-            </section>
-
-            <section class="features container" id="features">
-                <div class="section-head">
-                    <p class="eyebrow mono">Возможности</p>
-                    <h2>{t('Общую работу платформа выполняет сама')}</h2>
-                </div>
+            <section class="container" id="claims">
                 {
-                    rows.map((row, index) => (
-                        <article class:list={['feature', { 'feature--flip': index % 2 === 1 }]}>
-                            <div class="feature__text">
-                                <p class="eyebrow mono">{row.item.label}</p>
-                                <h3>{t(row.item.title)}</h3>
-                                <p>{t(row.item.text)}</p>
-                                <ul class="ticks">
-                                    {row.item.points.map((point) => <li>{t(point)}</li>)}
-                                </ul>
-                            </div>
-                            <div class="feature__visual">
-                                <Frame title={row.frame}>
-                                    {row.visual === 'alias' && <AliasMock />}
-                                    {row.visual === 'queue' && <QueueMock />}
-                                    {row.visual === 'registry' && <RegistryMock />}
-                                    {row.visual === 'graph' && <GraphMock />}
-                                </Frame>
-                            </div>
+                    poster.claims.map((claim) => (
+                        <article class="claim">
+                            <h2>{t(claim.title)}</h2>
+                            <p>{t(claim.text)}</p>
                         </article>
                     ))
                 }
             </section>
 
-            <section class="statement">
-                <div class="container">
-                    <h2>{t('Программе остаётся предметная логика')}</h2>
-                    <p class="statement__lead">{t(sample.text)}</p>
-                    <div class="statement__sample">
-                        <Frame title="Обращение к модели" note="пример">
-                            <CodeSample />
-                        </Frame>
-                    </div>
-                    <ul class="details">
-                        {
-                            details.map((item) => (
-                                <li>
-                                    <h3>{t(item.title)}</h3>
-                                    <p>{t(item.text)}</p>
-                                </li>
-                            ))
-                        }
-                    </ul>
+            <section class="band" id="perimeter">
+                <div class="container claim">
+                    <h2>{t(poster.perimeter.title)}</h2>
+                    <p>{t(poster.perimeter.text)}</p>
                 </div>
             </section>
 
-            <section class="invert" id="organization">
-                <div class="container invert__grid">
-                    <div>
-                        <p class="eyebrow mono">Для организации</p>
-                        <h2>{t(security.title)}</h2>
-                        <p class="invert__lead">{t(security.intro)}</p>
-                        <dl class="answers">
-                            {
-                                security.items.map((item) => (
-                                    <div>
-                                        <dt>{t(item.question)}</dt>
-                                        <dd>{t(item.answer)}</dd>
-                                    </div>
-                                ))
-                            }
-                        </dl>
-                    </div>
-                    <div class="invert__visual">
-                        <HubDiagram />
-                    </div>
-                </div>
-            </section>
-
-            <section class="example container" id="example">
-                <div class="section-head">
-                    <p class="eyebrow mono">Пример</p>
-                    <h2>{t(example.title)}</h2>
-                    <p class="section-head__lead">{t(example.intro)}</p>
-                </div>
-                <ol class="steps">
-                    {
-                        example.steps.map((step, index) => (
-                            <li>
-                                <p class="steps__index">{index + 1}</p>
-                                <h3>{t(step.title)}</h3>
-                                <p>{t(step.text)}</p>
-                            </li>
-                        ))
-                    }
-                </ol>
-            </section>
-
-            <section class="scope container">
-                <div class="section-head">
-                    <p class="eyebrow mono">Границы</p>
-                    <h2>{t(nonGoals.title)}</h2>
-                    <p class="section-head__lead">{t(nonGoals.intro)}</p>
-                </div>
-                <ul class="cards">
-                    {
-                        nonGoals.items.map((item) => (
-                            <li>
-                                <h3>{t(item.title)}</h3>
-                                <p>{t(item.text)}</p>
-                            </li>
-                        ))
-                    }
+            <section class="container scope" id="scope">
+                <h2>{t(poster.scopeTitle)}</h2>
+                <ul>
+                    {nonGoals.map((item) => <li>{item.title}</li>)}
                 </ul>
             </section>
 
-            <section class="open container" id="open">
-                <div>
-                    <p class="eyebrow mono">Открытый код</p>
-                    <h2>{t(openSource.title)}</h2>
-                    {openSource.paragraphs.map((paragraph) => <p class="open__text">{t(paragraph)}</p>)}
-                </div>
-                <div class="open__status">
-                    <h3>{t(status.title)}</h3>
-                    <p class="open__intro">{t(status.intro)}</p>
-                    <div class="open__lists">
-                        {
-                            [status.first, status.later].map((group) => (
-                                <div>
-                                    <p class="eyebrow mono">{group.title}</p>
-                                    <ul>
-                                        {group.items.map((item) => <li>{t(item)}</li>)}
-                                    </ul>
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-            </section>
-
-            <section class="container">
-                <div class="cta">
-                    <h2>{t(cta.title)}</h2>
-                    <p>{t(cta.text)}</p>
-                    <div class="actions">
-                        <a class="button button--solid" href={site.repository}>{hero.primary}</a>
-                        <a class="button button--outline" href="#contact">{hero.secondary}</a>
-                    </div>
+            <section class="container final" id="open">
+                <h2>{t(poster.open.title)}</h2>
+                <p>{t(poster.open.text)}</p>
+                <div class="actions">
+                    <a class="button button--solid" href={site.repository}>{site.primary}</a>
+                    <a class="button button--outline" href="#contact">{site.secondary}</a>
                 </div>
             </section>
         </main>
 
-        <footer class="foot" id="contact">
-            <div class="container foot__grid">
-                <div class="foot__about">
-                    <p class="head__mark">weragen</p>
-                    <p>{t(hero.heading)}</p>
-                </div>
-                <div>
-                    <p class="foot__title">Продукт</p>
-                    <ul>
-                        <li><a href="#features">Возможности</a></li>
-                        <li><a href="#organization">Для организации</a></li>
-                        <li><a href="#example">Пример</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <p class="foot__title">Проект</p>
-                    <ul>
-                        <li><a href={site.repository}>Исходный код</a></li>
-                        <li><a href="#open">Состояние проекта</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <p class="foot__title">Связь</p>
-                    <p class="foot__note">{t(cta.contactNote)}</p>
-                </div>
-            </div>
-            <div class="container foot__bottom mono">weragen, 2026</div>
+        <footer class="container foot" id="contact">
+            <span class="mark">weragen</span>
+            <span class="foot__note">{t(site.contactNote)}</span>
+            <a href={site.repository}>GitHub</a>
         </footer>
     </div>
 </Base>
 
 <style>
     .page {
-        --container: 1240px;
-        --radius: 14px;
-        --button-radius: 999px;
+        --container: 1360px;
+        /* Расстояние между утверждениями. Оно и задаёт ритм страницы. */
+        --gap: clamp(88px, 12vw, 184px);
     }
 
-    h2 {
-        font-size: clamp(30px, 3.6vw, 46px);
-        line-height: 1.1;
-        letter-spacing: -0.022em;
-    }
-
-    .eyebrow {
-        padding-bottom: 16px;
-        font-size: 12px;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: var(--muted);
-    }
-
-    .head {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: var(--bg);
-        border-bottom: 1px solid var(--line);
-    }
-
-    .head__inner {
-        display: flex;
-        align-items: center;
-        gap: 40px;
-        height: 68px;
-    }
-
-    .head__mark {
-        font-size: 22px;
-        font-weight: 600;
+    .mark {
+        font-size: 24px;
+        font-weight: 700;
         letter-spacing: -0.03em;
         text-decoration: none;
     }
 
-    .head__nav {
+    .top {
         display: flex;
-        gap: 28px;
-        font-size: 15px;
-    }
-
-    .head__nav a {
-        text-decoration: none;
-        color: var(--muted);
-    }
-
-    .head__nav a:hover {
-        color: var(--fg);
-    }
-
-    .head__button {
-        min-height: 38px;
-        margin-left: auto;
-        padding: 0 18px;
-        font-size: 14px;
+        align-items: baseline;
+        justify-content: space-between;
+        padding-top: 32px;
+        font-size: 18px;
     }
 
     .hero {
-        padding: 88px 0 0;
+        padding-top: clamp(72px, 11vw, 168px);
     }
 
-    .hero__grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-        align-items: center;
-        gap: 56px;
-    }
-
-    /* Заголовок стоит в левой колонке, поэтому берётся её доля от ширины страницы. */
     h1 {
-        font-size: min(52px, calc(var(--title-fit) * 0.52));
-        line-height: 1.05;
-        letter-spacing: -0.032em;
+        font-size: min(122px, var(--title-fit));
+        line-height: 0.98;
+        letter-spacing: -0.048em;
+    }
+
+    .keep {
+        white-space: nowrap;
     }
 
     .hero__lead {
-        max-width: 56ch;
-        padding: 28px 0 36px;
+        max-width: 34ch;
+        padding: clamp(28px, 3.4vw, 52px) 0 clamp(28px, 3vw, 44px);
+        font-size: clamp(20px, 2vw, 30px);
+        line-height: 1.35;
+        color: var(--muted);
+    }
+
+    .button {
+        min-height: 58px;
+        padding: 0 32px;
         font-size: 18px;
-        line-height: 1.62;
-        color: var(--muted);
     }
 
-    .highlights {
+    /* Утверждение слева, пояснение справа у нижнего края: так занята вся ширина страницы. */
+    .claim {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        margin-top: 88px;
-        border-top: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
+        grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
+        align-items: end;
+        gap: 56px;
+        padding-top: var(--gap);
     }
 
-    .highlights li {
-        display: grid;
-        gap: 4px;
-        padding: 26px 24px 28px 0;
+    h2 {
+        font-size: clamp(30px, 6.3vw, 96px);
+        line-height: 1;
+        letter-spacing: -0.042em;
     }
 
-    .highlights li + li {
-        padding-left: 24px;
-        border-left: 1px solid var(--line);
-    }
-
-    .highlights strong {
-        font-size: 17px;
-        font-weight: 600;
-        line-height: 1.3;
-    }
-
-    .highlights span {
-        font-size: 14.5px;
+    .claim p,
+    .final p {
+        padding-bottom: 0.3em;
+        font-size: clamp(18px, 1.55vw, 24px);
+        line-height: 1.4;
         color: var(--muted);
     }
 
-    .problem,
-    .features,
-    .example,
-    .scope {
-        padding-top: 120px;
-    }
-
-    .section-head {
-        max-width: 780px;
-        padding-bottom: 48px;
-    }
-
-    .section-head__lead {
-        padding-top: 20px;
-        font-size: 18px;
-        line-height: 1.62;
-        color: var(--muted);
-    }
-
-    .cards {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .cards--four {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .cards li {
-        padding: 24px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-    }
-
-    .cards__index {
-        padding-bottom: 28px;
-        font-size: 12px;
-        color: var(--muted);
-    }
-
-    .cards h3 {
-        padding-bottom: 10px;
-        font-size: 18px;
-        line-height: 1.3;
-    }
-
-    .cards li > p:last-child {
-        font-size: 15px;
-        line-height: 1.6;
-        color: var(--muted);
-    }
-
-    .feature {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-        align-items: center;
-        gap: 72px;
-        padding: 56px 0;
-        border-top: 1px solid var(--line);
-    }
-
-    .feature--flip .feature__text {
-        order: 2;
-    }
-
-    .feature h3 {
-        padding-bottom: 16px;
-        font-size: clamp(24px, 2.5vw, 32px);
-        line-height: 1.15;
-        letter-spacing: -0.018em;
-    }
-
-    .feature__text > p:not(.eyebrow) {
-        font-size: 16.5px;
-        line-height: 1.65;
-        color: var(--muted);
-    }
-
-    .ticks {
-        display: grid;
-        gap: 8px;
-        padding-top: 22px;
-        font-size: 15px;
-    }
-
-    .ticks li {
-        position: relative;
-        padding-left: 22px;
-    }
-
-    .ticks li::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0.62em;
-        width: 10px;
-        border-top: 1px solid var(--fg);
-    }
-
-    .statement {
-        margin-top: 64px;
-        padding: 112px 0;
-        background: var(--surface);
-        text-align: center;
-    }
-
-    .statement h2 {
-        max-width: 18ch;
-        margin-inline: auto;
-    }
-
-    .statement__lead {
-        max-width: 62ch;
-        margin-inline: auto;
-        padding-top: 20px;
-        font-size: 18px;
-        color: var(--muted);
-    }
-
-    .statement__sample {
-        max-width: 720px;
-        margin: 44px auto 0;
-        text-align: left;
-    }
-
-    .details {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 40px 48px;
-        padding-top: 72px;
-        text-align: left;
-    }
-
-    .details li {
-        padding-top: 18px;
-        border-top: 1px solid var(--fg);
-    }
-
-    .details h3 {
-        padding-bottom: 8px;
-        font-size: 17px;
-        line-height: 1.3;
-    }
-
-    .details p {
-        font-size: 15px;
-        color: var(--muted);
-    }
-
-    /* Перевёрнутый раздел: вложенные схемы берут цвета из тех же переменных и подстраиваются сами. */
-    .invert {
+    .band {
         --bg: var(--invert-bg);
         --fg: var(--invert-fg);
         --muted: var(--invert-muted);
-        --line: var(--invert-line);
-        padding: 112px 0;
+        margin-top: var(--gap);
+        padding-bottom: var(--gap);
         background: var(--bg);
         color: var(--fg);
     }
 
-    .invert__grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-        align-items: center;
-        gap: 72px;
+    .scope {
+        padding-top: var(--gap);
     }
 
-    .invert__lead {
-        padding-top: 20px;
-        font-size: 17px;
-        line-height: 1.62;
+    .scope ul {
+        padding-top: clamp(32px, 4vw, 64px);
+        font-size: clamp(26px, 4.3vw, 64px);
+        font-weight: 700;
+        line-height: 1.16;
+        letter-spacing: -0.035em;
         color: var(--muted);
     }
 
-    .answers {
-        display: grid;
-        padding-top: 36px;
+    .final {
+        padding-top: var(--gap);
     }
 
-    .answers > div {
-        padding: 18px 0;
-        border-top: 1px solid var(--line);
+    .final h2 {
+        font-size: min(122px, var(--title-fit));
+        line-height: 0.98;
+        letter-spacing: -0.048em;
     }
 
-    .answers dt {
-        padding-bottom: 6px;
-        font-size: 17px;
-        font-weight: 600;
-    }
-
-    .answers dd {
-        font-size: 15px;
-        line-height: 1.62;
-        color: var(--muted);
-    }
-
-    .steps {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 32px;
-    }
-
-    .steps__index {
-        padding-bottom: 20px;
-        font-size: 56px;
-        font-weight: 600;
-        line-height: 1;
-        letter-spacing: -0.04em;
-    }
-
-    .steps h3 {
-        padding-bottom: 8px;
-        font-size: 18px;
-        line-height: 1.3;
-    }
-
-    .steps li > p:last-child {
-        font-size: 15px;
-        line-height: 1.6;
-        color: var(--muted);
-    }
-
-    .open {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-        align-items: start;
-        gap: 72px;
-        padding-top: 120px;
-    }
-
-    .open__text {
-        padding-top: 18px;
-        font-size: 17px;
-        line-height: 1.65;
-        color: var(--muted);
-    }
-
-    .open__status {
-        padding: 32px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-    }
-
-    .open__status h3 {
-        font-size: 22px;
-        letter-spacing: -0.01em;
-    }
-
-    .open__intro {
-        padding: 10px 0 28px;
-        font-size: 15px;
-        color: var(--muted);
-    }
-
-    .open__lists {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 32px;
-    }
-
-    .open__lists .eyebrow {
-        padding-bottom: 6px;
-    }
-
-    .open__lists li {
-        padding: 9px 0;
-        border-top: 1px solid var(--line);
-        font-size: 14.5px;
-        line-height: 1.45;
-    }
-
-    .cta {
-        display: grid;
-        justify-items: center;
-        gap: 18px;
-        margin-top: 120px;
-        padding: 80px 32px;
-        border: 1px solid var(--fg);
-        border-radius: var(--radius);
-        text-align: center;
-    }
-
-    .cta h2 {
-        max-width: 26ch;
-    }
-
-    .cta p {
-        max-width: 56ch;
-        padding-bottom: 12px;
-        font-size: 17px;
-        color: var(--muted);
+    .final p {
+        max-width: 40ch;
+        padding: clamp(24px, 3vw, 44px) 0 clamp(28px, 3vw, 44px);
     }
 
     .foot {
-        margin-top: 120px;
-        border-top: 1px solid var(--line);
-    }
-
-    .foot__grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
-        gap: 40px;
-        padding: 56px 0 48px;
-        font-size: 15px;
-    }
-
-    .foot__about p + p {
-        max-width: 26ch;
-        padding-top: 10px;
-        color: var(--muted);
-    }
-
-    .foot__title {
-        padding-bottom: 12px;
-        font-weight: 600;
-    }
-
-    .foot__grid li {
-        padding: 4px 0;
-    }
-
-    .foot__grid a {
-        text-decoration: none;
-        color: var(--muted);
-    }
-
-    .foot__grid a:hover {
-        color: var(--fg);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 8px 32px;
+        padding-top: var(--gap);
+        font-size: 18px;
     }
 
     .foot__note {
+        margin-right: auto;
         color: var(--muted);
     }
 
-    .foot__bottom {
-        padding: 20px 0 8px;
-        border-top: 1px solid var(--line);
-        font-size: 12px;
-        color: var(--muted);
-    }
-
-    @media (max-width: 1040px) {
-        .hero__grid,
-        .feature,
-        .invert__grid,
-        .open {
+    @media (max-width: 900px) {
+        .claim {
             grid-template-columns: minmax(0, 1fr);
-            gap: 40px;
+            gap: 16px;
         }
 
-        .feature--flip .feature__text {
-            order: 0;
+        .claim p {
+            max-width: 36ch;
+            padding-bottom: 0;
         }
+    }
 
-        /* Колонки героя встали друг под другом: заголовку доступна вся ширина. */
+    /* На узком экране заголовок ложится в три строки, зато остаётся крупнее утверждений. */
+    @media (max-width: 700px) {
         h1 {
-            font-size: min(52px, var(--title-fit));
+            font-size: calc((100vw - 2 * var(--gutter)) / 9.8);
+            line-height: 1.02;
         }
 
-        .cards--four,
-        .highlights {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .highlights li:nth-child(3) {
-            padding-left: 0;
-            border-left: 0;
-        }
-
-        .highlights li:nth-child(n + 3) {
-            border-top: 1px solid var(--line);
-        }
-
-        .steps {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .foot__grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .keep {
+            white-space: normal;
         }
     }
 
-    @media (max-width: 760px) {
-        .head__nav {
-            display: none;
+    @media (max-width: 560px) {
+        .button {
+            min-height: 52px;
+            padding: 0 24px;
+            font-size: 17px;
         }
 
-        .hero {
-            padding-top: 48px;
-        }
-
-        .highlights {
-            margin-top: 56px;
-        }
-
-        .problem,
-        .features,
-        .example,
-        .scope,
-        .open {
-            padding-top: 80px;
-        }
-
-        .cards,
-        .cards--four,
-        .details,
-        .open__lists {
-            grid-template-columns: minmax(0, 1fr);
-        }
-
-        .statement,
-        .invert {
-            padding: 72px 0;
-        }
-
-        .details {
-            gap: 28px;
-            padding-top: 48px;
-        }
-
-        .open__status {
-            padding: 24px;
-        }
-
-        .cta {
-            margin-top: 80px;
-            padding: 56px 20px;
-        }
-
-        .foot {
-            margin-top: 80px;
-        }
-    }
-
-    @media (max-width: 520px) {
-        .highlights,
-        .steps,
-        .foot__grid {
-            grid-template-columns: minmax(0, 1fr);
-        }
-
-        .highlights li,
-        .highlights li + li {
-            padding: 18px 0;
-            border-left: 0;
-        }
-
-        .highlights li + li {
-            border-top: 1px solid var(--line);
-        }
-
-        .steps__index {
-            font-size: 40px;
-            padding-bottom: 12px;
+        .foot__note {
+            flex-basis: 100%;
+            order: 3;
         }
     }
 </style>

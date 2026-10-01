@@ -3,14 +3,14 @@ import '@fontsource/ibm-plex-sans/cyrillic-400.css';
 import '@fontsource/ibm-plex-sans/latin-400.css';
 import '@fontsource/ibm-plex-sans/cyrillic-500.css';
 import '@fontsource/ibm-plex-sans/latin-500.css';
-import '@fontsource/ibm-plex-sans/cyrillic-600.css';
-import '@fontsource/ibm-plex-sans/latin-600.css';
+import '@fontsource/ibm-plex-sans/cyrillic-700.css';
+import '@fontsource/ibm-plex-sans/latin-700.css';
 import '@fontsource/golos-text/cyrillic-400.css';
 import '@fontsource/golos-text/latin-400.css';
 import '@fontsource/golos-text/cyrillic-500.css';
 import '@fontsource/golos-text/latin-500.css';
-import '@fontsource/golos-text/cyrillic-600.css';
-import '@fontsource/golos-text/latin-600.css';
+import '@fontsource/golos-text/cyrillic-700.css';
+import '@fontsource/golos-text/latin-700.css';
 import '@fontsource/ibm-plex-mono/cyrillic-400.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
 import '@fontsource/ibm-plex-mono/cyrillic-500.css';
@@ -21,7 +21,7 @@ import ReviewBar from '../components/ReviewBar.astro';
 interface Props {
     title: string;
     description: string;
-    /** Номер версии лендинга. У обзорной страницы его нет. */
+    /** Номер варианта лендинга. У обзорной страницы его нет. */
     version?: 1 | 2 | 3;
 }
 
@@ -35,13 +35,13 @@ const { title, description, version } = Astro.props;
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
         <meta name="description" content={description} />
-        <!-- Версии страницы сравниваются между собой и пока не предназначены для поисковиков. -->
+        <!-- Варианты страницы сравниваются между собой и пока не предназначены для поисковиков. -->
         <meta name="robots" content="noindex" />
         <meta name="generator" content={Astro.generator} />
         <!--
             Шрифт и тема применяются до первой отрисовки, иначе страница мигнула бы
             оформлением по умолчанию. Значение из адреса (?font=golos&theme=dark) важнее
-            сохранённого: так можно передать ссылку на конкретное сочетание.
+            сохранённого, так можно передать ссылку на конкретное сочетание.
         -->
         <script is:inline>
             (function () {
@@ -53,7 +53,7 @@ const { title, description, version } = Astro.props;
                     if (font === 'golos' || font === 'plex') root.dataset.font = font;
                     if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
                 } catch (error) {
-                    // Хранилище недоступно в приватном режиме: остаётся оформление по умолчанию.
+                    // Хранилище недоступно в приватном режиме, остаётся оформление по умолчанию.
                 }
             })();
         </script>

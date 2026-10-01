@@ -1,198 +1,104 @@
 ---
 /**
- * Версия 1, «Лист».
+ * Вариант 1, "Сборная".
  *
- * Страница устроена как лист технического описания: слева номер и название раздела,
- * справа содержание. Изображений почти нет, смысл несут текст и тонкие линии. За образец
- * сдержанности взят сайт OpenTUI, но страница шире и рассказывает подробнее.
+ * Страница продукта, собранная из блоков, которые автор проекта отметил в первом наборе:
+ * полоса фактов под заголовком, блок о нагрузке и квотах, схема контура организации,
+ * блок об управлении на перевёрнутом фоне, карточки "чем не является" и подвал с колонками.
+ * Мелких подписей, нумерации и схем интерфейса здесь нет.
  */
 import Base from '../../layouts/Base.astro';
-import Frame from '../../components/Frame.astro';
 import HubDiagram from '../../components/HubDiagram.astro';
-import JournalMock from '../../components/JournalMock.astro';
-import AliasMock from '../../components/AliasMock.astro';
-import CodeSample from '../../components/CodeSample.astro';
 import { withBase } from '../../lib/url';
 import { typograph as t } from '../../lib/typograph';
-import {
-    site,
-    hero,
-    facts,
-    problem,
-    features,
-    feature,
-    sample,
-    security,
-    example,
-    nonGoals,
-    status,
-    openSource,
-    cta,
-} from '../../data/content';
+import { site, combined, nonGoals } from '../../data/content';
 
 const navigation = [
     { id: 'features', label: 'Возможности' },
-    { id: 'structure', label: 'Устройство' },
-    { id: 'security', label: 'Безопасность' },
+    { id: 'perimeter', label: 'Контур' },
+    { id: 'control', label: 'Управление' },
     { id: 'scope', label: 'Границы' },
-    { id: 'status', label: 'Состояние' },
 ];
-
-const number = (index: number): string => String(index + 1).padStart(2, '0');
 ---
 
 <Base title={site.title} description={site.description} version={1}>
     <div class="page">
         <header class="head">
-            <div class="container head__inner mono">
-                <a class="head__mark" href={withBase('/v1/')}>weragen</a>
+            <div class="container head__inner">
+                <a class="mark" href={withBase('/v1/')}>weragen</a>
                 <nav class="head__nav" aria-label="Разделы страницы">
                     {navigation.map((item) => <a href={`#${item.id}`}>{item.label}</a>)}
                 </nav>
-                <a class="head__repo" href={site.repository}>GitHub</a>
+                <a class="button button--solid head__button" href={site.repository}>GitHub</a>
             </div>
         </header>
 
         <main>
             <section class="hero container">
-                <p class="hero__status mono">{hero.status}</p>
-                <h1 class="hero__title">{t(hero.heading)}</h1>
-                <div class="hero__grid">
+                <h1>{site.headingStart} <span class="keep">{site.headingEnd}</span></h1>
+                <p class="hero__lead">{t(combined.lead)}</p>
+                <div class="actions">
+                    <a class="button button--solid" href={site.repository}>{site.primary}</a>
+                    <a class="button button--outline" href="#contact">{site.secondary}</a>
+                </div>
+                <ul class="highlights">
+                    {
+                        combined.highlights.map((item) => (
+                            <li>
+                                <strong>{t(item.title)}</strong>
+                                <span>{t(item.text)}</span>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </section>
+
+            <section class="section container" id="features">
+                <h2>{t(combined.features.title)}</h2>
+                <ul class="features">
+                    {
+                        combined.features.items.map((item) => (
+                            <li>
+                                <h3>{t(item.title)}</h3>
+                                <p>{t(item.text)}</p>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </section>
+
+            <section class="section container" id="load">
+                <div class="panel">
+                    <h2>{t(combined.load.title)}</h2>
                     <div>
-                        <p class="hero__lead">{t(hero.lead)}</p>
-                        <div class="actions">
-                            <a class="button button--solid" href={site.repository}>{hero.primary}</a>
-                            <a class="button button--outline" href="#open">{hero.secondary}</a>
-                        </div>
-                    </div>
-                    <ul class="hero__facts">
-                        {
-                            facts.map((fact, index) => (
-                                <li>
-                                    <span class="mono">{number(index)}</span>
-                                    {t(fact)}
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </div>
-            </section>
-
-            <section class="row container" id="why">
-                <p class="row__label mono"><span>01</span>Зачем</p>
-                <div class="row__body">
-                    <h2>{t(problem.title)}</h2>
-                    <p class="lead">{t(problem.intro)}</p>
-                    <ul class="pairs">
-                        {
-                            problem.items.map((item) => (
-                                <li>
-                                    <h3>{t(item.title)}</h3>
-                                    <p>{t(item.text)}</p>
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </div>
-            </section>
-
-            <section class="row container" id="features">
-                <p class="row__label mono"><span>02</span>Возможности</p>
-                <div class="row__body">
-                    <h2>{t('Что платформа делает за программу')}</h2>
-                    <ul class="pairs">
-                        {
-                            features.map((item, index) => (
-                                <li>
-                                    <p class="pairs__index mono">2.{index + 1}</p>
-                                    <h3>{t(item.title)}</h3>
-                                    <p>{t(item.text)}</p>
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </div>
-            </section>
-
-            <section class="row container" id="structure">
-                <p class="row__label mono"><span>03</span>Устройство</p>
-                <div class="row__body">
-                    <h2>{t('Один центр для моделей, агентов, инструментов и воркфлоу')}</h2>
-                    <p class="lead">
-                        {
-                            t(
-                                'Программы организации обращаются к weragen по API. Платформа сама ' +
-                                    'работает с провайдерами и с локальными моделями. За пределы ' +
-                                    'контура уходят только запросы к тем провайдерам, которых ' +
-                                    'организация подключила.',
-                            )
-                        }
-                    </p>
-                    <div class="figure">
-                        <HubDiagram />
+                        <p>{t(combined.load.text)}</p>
+                        <ul>
+                            {combined.load.points.map((point) => <li>{t(point)}</li>)}
+                        </ul>
                     </div>
                 </div>
             </section>
 
-            <section class="row container" id="program">
-                <p class="row__label mono"><span>04</span>Для программы</p>
-                <div class="row__body">
-                    <h2>{t(sample.title)}</h2>
-                    <p class="lead">{t(sample.text)}</p>
-                    <div class="split">
-                        <Frame title="Обращение к модели" note="пример">
-                            <CodeSample />
-                        </Frame>
-                        <Frame title="Псевдонимы моделей">
-                            <AliasMock />
-                        </Frame>
+            <section class="section container" id="perimeter">
+                <h2>{t(combined.perimeter.title)}</h2>
+                <p class="lead">{t(combined.perimeter.text)}</p>
+                <div class="figure">
+                    <HubDiagram />
+                </div>
+            </section>
+
+            <section class="invert" id="control">
+                <div class="container invert__grid">
+                    <div>
+                        <h2>{t(combined.control.title)}</h2>
+                        <p class="lead">{t(combined.control.text)}</p>
                     </div>
-                </div>
-            </section>
-
-            <section class="row container" id="journal">
-                <p class="row__label mono"><span>05</span>Журнал</p>
-                <div class="row__body">
-                    <h2>{t(feature('journal').title)}</h2>
-                    <div class="split split--text">
-                        <p class="split__text">{t(feature('journal').text)}</p>
-                        <Frame title="Журнал исполнения">
-                            <JournalMock />
-                        </Frame>
-                    </div>
-                </div>
-            </section>
-
-            <section class="row container" id="example">
-                <p class="row__label mono"><span>06</span>Пример</p>
-                <div class="row__body">
-                    <h2>{t(example.title)}</h2>
-                    <p class="lead">{t(example.intro)}</p>
-                    <ol class="steps">
+                    <dl class="answers">
                         {
-                            example.steps.map((step, index) => (
-                                <li>
-                                    <p class="steps__index mono">{number(index)}</p>
-                                    <h3>{t(step.title)}</h3>
-                                    <p>{t(step.text)}</p>
-                                </li>
-                            ))
-                        }
-                    </ol>
-                </div>
-            </section>
-
-            <section class="row container" id="security">
-                <p class="row__label mono"><span>07</span>Безопасность</p>
-                <div class="row__body">
-                    <h2>{t(security.title)}</h2>
-                    <p class="lead">{t(security.intro)}</p>
-                    <dl class="pairs">
-                        {
-                            security.items.map((item) => (
+                            combined.control.items.map((item) => (
                                 <div>
-                                    <dt>{t(item.question)}</dt>
-                                    <dd>{t(item.answer)}</dd>
+                                    <dt>{t(item.title)}</dt>
+                                    <dd>{t(item.text)}</dd>
                                 </div>
                             ))
                         }
@@ -200,69 +106,88 @@ const number = (index: number): string => String(index + 1).padStart(2, '0');
                 </div>
             </section>
 
-            <section class="row container" id="scope">
-                <p class="row__label mono"><span>08</span>Границы</p>
-                <div class="row__body">
-                    <h2>{t(nonGoals.title)}</h2>
-                    <p class="lead">{t(nonGoals.intro)}</p>
-                    <ul class="pairs">
-                        {
-                            nonGoals.items.map((item) => (
-                                <li>
-                                    <h3>{t(item.title)}</h3>
-                                    <p>{t(item.text)}</p>
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </div>
+            <section class="section container" id="scope">
+                <h2>{t(combined.scopeTitle)}</h2>
+                <ul class="cards">
+                    {
+                        nonGoals.map((item) => (
+                            <li>
+                                <h3>{item.title}</h3>
+                                <p>{t(item.text)}</p>
+                            </li>
+                        ))
+                    }
+                </ul>
             </section>
 
-            <section class="row container" id="status">
-                <p class="row__label mono"><span>09</span>Состояние</p>
-                <div class="row__body">
-                    <h2>{t(status.title)}</h2>
-                    <p class="lead">{t(status.intro)}</p>
-                    <div class="pairs">
-                        {
-                            [status.first, status.later].map((group) => (
-                                <div>
-                                    <h3>{group.title}</h3>
-                                    <ul class="lines">
-                                        {group.items.map((item) => <li>{t(item)}</li>)}
-                                    </ul>
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-            </section>
-
-            <section class="row container" id="open">
-                <p class="row__label mono"><span>10</span>Открытый код</p>
-                <div class="row__body">
-                    <h2>{t(openSource.title)}</h2>
-                    {openSource.paragraphs.map((paragraph) => <p class="lead">{t(paragraph)}</p>)}
-                    <div class="actions closing">
-                        <a class="button button--solid" href={site.repository}>{hero.primary}</a>
-                    </div>
-                    <p class="note mono">{t(cta.contactNote)}</p>
+            <section class="section container closing" id="open">
+                <h2>{t(combined.open.title)}</h2>
+                <p class="lead">{t(combined.open.text)}</p>
+                <div class="actions">
+                    <a class="button button--solid" href={site.repository}>{site.primary}</a>
+                    <a class="button button--outline" href="#contact">{site.secondary}</a>
                 </div>
             </section>
         </main>
 
-        <footer class="foot">
-            <div class="container foot__inner mono">
-                <span>weragen, 2026</span>
-                <a href={site.repository}>github.com/EGSP/weragen</a>
+        <footer class="foot" id="contact">
+            <div class="container foot__grid">
+                <div>
+                    <p class="mark">weragen</p>
+                    <p class="foot__about">{t(site.heading)}</p>
+                </div>
+                <div>
+                    <p class="foot__title">Продукт</p>
+                    <ul>
+                        <li><a href="#features">Возможности</a></li>
+                        <li><a href="#load">Нагрузка и квоты</a></li>
+                        <li><a href="#perimeter">Контур организации</a></li>
+                        <li><a href="#control">Управление и контроль</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="foot__title">Проект</p>
+                    <ul>
+                        <li><a href={site.repository}>Исходный код</a></li>
+                        <li><a href="#open">Открытый код</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="foot__title">Связь</p>
+                    <p class="foot__note">{t(site.contactNote)}</p>
+                </div>
             </div>
+            <div class="container foot__bottom">weragen, 2026</div>
         </footer>
     </div>
 </Base>
 
 <style>
     .page {
-        --container: 1160px;
+        --container: 1200px;
+        --radius: 16px;
+        --button-radius: 999px;
+    }
+
+    .mark {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        text-decoration: none;
+    }
+
+    h2 {
+        font-size: clamp(30px, 3.8vw, 50px);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+    }
+
+    .lead {
+        max-width: 60ch;
+        padding-top: 20px;
+        font-size: 20px;
+        line-height: 1.5;
+        color: var(--muted);
     }
 
     .head {
@@ -276,283 +201,361 @@ const number = (index: number): string => String(index + 1).padStart(2, '0');
     .head__inner {
         display: flex;
         align-items: center;
-        gap: 28px;
-        height: 56px;
-        font-size: 13px;
-    }
-
-    .head__mark {
-        font-size: 15px;
-        font-weight: 500;
-        text-decoration: none;
+        gap: 44px;
+        height: 68px;
     }
 
     .head__nav {
         display: flex;
-        gap: 24px;
-        margin-left: auto;
+        gap: 28px;
+        font-size: 16px;
     }
 
     .head__nav a {
-        color: var(--muted);
         text-decoration: none;
+        color: var(--muted);
     }
 
     .head__nav a:hover {
         color: var(--fg);
     }
 
+    .head__button {
+        min-height: 40px;
+        margin-left: auto;
+        padding: 0 20px;
+        font-size: 15px;
+    }
+
     .hero {
-        padding: 88px 0 96px;
+        padding-top: 104px;
     }
 
-    .hero__status {
-        padding-bottom: 28px;
-        font-size: 13px;
-        color: var(--muted);
+    h1 {
+        font-size: min(76px, var(--title-fit));
+        line-height: 1.02;
+        letter-spacing: -0.038em;
     }
 
-    .hero__title {
-        max-width: 22ch;
-        font-size: min(72px, var(--title-fit));
-        font-weight: 500;
-        line-height: 1.04;
-        letter-spacing: -0.025em;
-    }
-
-    .hero__grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-        align-items: start;
-        gap: 72px;
-        padding-top: 52px;
+    .keep {
+        white-space: nowrap;
     }
 
     .hero__lead {
-        padding-bottom: 32px;
-        font-size: 19px;
-        line-height: 1.6;
+        max-width: 56ch;
+        padding: 28px 0 36px;
+        font-size: 21px;
+        line-height: 1.5;
+        color: var(--muted);
     }
 
-    .hero__facts li {
+    .highlights {
         display: grid;
-        grid-template-columns: 40px minmax(0, 1fr);
-        padding: 11px 0;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-top: 88px;
         border-top: 1px solid var(--line);
-        font-size: 15px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .highlights li {
+        display: grid;
+        align-content: start;
+        gap: 6px;
+        padding: 28px 24px 30px 0;
+    }
+
+    .highlights li + li {
+        padding-left: 24px;
+        border-left: 1px solid var(--line);
+    }
+
+    .highlights strong {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .highlights span {
+        font-size: 16px;
+        color: var(--muted);
+    }
+
+    .section {
+        padding-top: 128px;
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 52px 56px;
+        padding-top: 56px;
+    }
+
+    .features h3 {
+        font-size: 22px;
+        line-height: 1.25;
+        letter-spacing: -0.012em;
+    }
+
+    .features p {
+        padding-top: 10px;
+        font-size: 17px;
+        color: var(--muted);
+    }
+
+    .panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 64px;
+        padding: 72px 64px;
+        background: var(--surface);
+        border-radius: 24px;
+    }
+
+    /* Заголовок стоит в половине ширины, поэтому он меньше остальных и ложится в две строки. */
+    .panel h2 {
+        font-size: clamp(28px, 3.1vw, 42px);
+    }
+
+    .panel p {
+        font-size: 20px;
         line-height: 1.5;
     }
 
-    .hero__facts li:last-child {
-        border-bottom: 1px solid var(--line);
-    }
-
-    .hero__facts span {
-        padding-top: 3px;
-        font-size: 12px;
-        color: var(--muted);
-    }
-
-    .row {
+    .panel ul {
         display: grid;
-        grid-template-columns: 200px minmax(0, 1fr);
-        gap: 40px;
-        padding: 72px 0 80px;
-        border-top: 1px solid var(--fg);
-    }
-
-    .row__label {
-        position: sticky;
-        top: 80px;
-        align-self: start;
-        font-size: 13px;
-    }
-
-    .row__label span {
-        padding-right: 12px;
-        color: var(--muted);
-    }
-
-    .row__body h2 {
-        max-width: 22ch;
-        font-size: clamp(26px, 3.2vw, 38px);
-        font-weight: 500;
-        line-height: 1.14;
-        letter-spacing: -0.018em;
-    }
-
-    .lead {
-        max-width: 64ch;
-        padding-top: 18px;
+        gap: 12px;
+        padding-top: 32px;
         font-size: 18px;
-        line-height: 1.6;
-    }
-
-    .pairs {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 40px 56px;
-        padding-top: 44px;
-    }
-
-    .pairs h3,
-    .pairs dt {
-        padding-bottom: 8px;
-        font-size: 17px;
-        font-weight: 600;
-        line-height: 1.35;
-    }
-
-    .pairs p,
-    .pairs dd {
-        font-size: 15.5px;
-        line-height: 1.62;
-        color: var(--muted);
-    }
-
-    .pairs .pairs__index {
-        padding-bottom: 10px;
-        font-size: 12px;
+        font-weight: 500;
     }
 
     .figure {
-        padding-top: 48px;
+        padding-top: 64px;
     }
 
-    .split {
-        display: grid;
-        grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-        align-items: start;
-        gap: 24px;
-        padding-top: 40px;
-    }
-
-    .split--text {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-        gap: 48px;
-        padding-top: 28px;
-    }
-
-    .split__text {
-        font-size: 17px;
-        line-height: 1.62;
-    }
-
-    .steps {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 28px;
-        padding-top: 44px;
-    }
-
-    .steps li {
-        padding-top: 14px;
-        border-top: 1px solid var(--fg);
-    }
-
-    .steps__index {
-        padding-bottom: 14px;
-        font-size: 12px;
-        color: var(--muted);
-    }
-
-    .steps h3 {
-        padding-bottom: 8px;
-        font-size: 16px;
-        line-height: 1.35;
-    }
-
-    .steps li > p:last-child {
-        font-size: 14.5px;
-        line-height: 1.6;
-        color: var(--muted);
-    }
-
-    .lines li {
-        padding: 10px 0;
-        border-top: 1px solid var(--line);
-        font-size: 15.5px;
+    /* Перевёрнутый раздел: вложенные блоки берут цвета из тех же переменных и подстраиваются сами. */
+    .invert {
+        --bg: var(--invert-bg);
+        --fg: var(--invert-fg);
+        --muted: var(--invert-muted);
+        --line: var(--invert-line);
+        margin-top: 128px;
+        padding: 120px 0;
+        background: var(--bg);
         color: var(--fg);
     }
 
-    .lines li:last-child {
-        border-bottom: 1px solid var(--line);
+    .invert__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        align-items: start;
+        gap: 80px;
+    }
+
+    .answers > div {
+        padding: 26px 0;
+        border-top: 1px solid var(--line);
+    }
+
+    .answers > div:first-child {
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    .answers dt {
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .answers dd {
+        padding-top: 6px;
+        font-size: 17px;
+        color: var(--muted);
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        padding-top: 56px;
+    }
+
+    .cards li {
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+    }
+
+    .cards h3 {
+        font-size: 19px;
+        line-height: 1.3;
+    }
+
+    .cards p {
+        padding-top: 10px;
+        font-size: 16px;
+        color: var(--muted);
     }
 
     .closing {
-        padding-top: 32px;
+        display: grid;
+        justify-items: center;
+        text-align: center;
     }
 
-    .note {
-        padding-top: 16px;
-        font-size: 12px;
-        color: var(--muted);
+    .closing .actions {
+        justify-content: center;
+        padding-top: 36px;
     }
 
     .foot {
-        border-top: 1px solid var(--fg);
+        margin-top: 128px;
+        border-top: 1px solid var(--line);
     }
 
-    .foot__inner {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 8px 24px;
-        padding: 24px 0;
-        font-size: 13px;
+    .foot__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
+        gap: 40px;
+        padding: 56px 0 48px;
+        font-size: 16px;
+    }
+
+    .foot__about {
+        max-width: 24ch;
+        padding-top: 10px;
         color: var(--muted);
     }
 
-    @media (max-width: 960px) {
+    .foot__title {
+        padding-bottom: 12px;
+        font-weight: 700;
+    }
+
+    .foot__grid li {
+        padding: 4px 0;
+    }
+
+    .foot__grid a:not(.mark) {
+        text-decoration: none;
+        color: var(--muted);
+    }
+
+    .foot__grid a:not(.mark):hover {
+        color: var(--fg);
+    }
+
+    .foot__note {
+        color: var(--muted);
+    }
+
+    .foot__bottom {
+        padding: 20px 0 8px;
+        border-top: 1px solid var(--line);
+        font-size: 15px;
+        color: var(--muted);
+    }
+
+    @media (max-width: 1000px) {
+        .features {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .panel,
+        .invert__grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 40px;
+        }
+
+        .panel {
+            padding: 56px 40px;
+        }
+
+        .cards,
+        .highlights,
+        .foot__grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .highlights li:nth-child(3) {
+            padding-left: 0;
+            border-left: 0;
+        }
+
+        .highlights li:nth-child(n + 3) {
+            border-top: 1px solid var(--line);
+        }
+    }
+
+    @media (max-width: 760px) {
         .head__nav {
             display: none;
         }
 
-        .head__repo {
-            margin-left: auto;
-        }
-
         .hero {
-            padding: 56px 0 64px;
+            padding-top: 56px;
         }
 
-        .hero__grid {
+        /* На узком экране заголовок ложится в три строки, зато набран крупнее. */
+        h1 {
+            font-size: calc((100vw - 2 * var(--gutter)) / 9.8);
+        }
+
+        .keep {
+            white-space: normal;
+        }
+
+        .hero__lead {
+            font-size: 19px;
+        }
+
+        .highlights {
+            margin-top: 56px;
+        }
+
+        .section {
+            padding-top: 88px;
+        }
+
+        .features,
+        .cards {
             grid-template-columns: minmax(0, 1fr);
-            gap: 44px;
-            padding-top: 32px;
+            padding-top: 40px;
         }
 
-        .row {
-            grid-template-columns: minmax(0, 1fr);
-            gap: 20px;
-            padding: 48px 0 56px;
+        .panel {
+            padding: 40px 24px;
+            border-radius: 20px;
         }
 
-        .row__label {
-            position: static;
+        .invert {
+            margin-top: 88px;
+            padding: 80px 0;
         }
 
-        .split,
-        .split--text {
-            grid-template-columns: minmax(0, 1fr);
-            gap: 24px;
-        }
-
-        .steps {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .foot {
+            margin-top: 88px;
         }
     }
 
-    @media (max-width: 640px) {
-        .pairs,
-        .steps {
+    @media (max-width: 560px) {
+        .features,
+        .cards,
+        .highlights,
+        .foot__grid {
             grid-template-columns: minmax(0, 1fr);
-            gap: 28px;
         }
 
-        .hero__lead,
-        .lead {
-            font-size: 17px;
+        .highlights li,
+        .highlights li + li {
+            padding: 20px 0;
+            border-left: 0;
+        }
+
+        .highlights li + li {
+            border-top: 1px solid var(--line);
         }
     }
 </style>

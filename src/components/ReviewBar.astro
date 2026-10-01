@@ -2,10 +2,10 @@
 import { withBase } from '../lib/url';
 
 /**
- * Панель проверки: переход между версиями страницы, выбор шрифта и темы.
+ * Панель проверки: переход между вариантами страницы, выбор шрифта и темы.
  *
- * Панель нужна только на время сравнения версий и в опубликованный сайт не войдёт.
- * Выбор шрифта и темы хранится в браузере, поэтому сохраняется при переходе между версиями.
+ * Панель нужна только на время сравнения вариантов и в опубликованный сайт не войдёт.
+ * Выбор шрифта и темы хранится в браузере, поэтому сохраняется при переходе между вариантами.
  */
 interface Props {
     version?: 1 | 2 | 3;
@@ -14,9 +14,9 @@ interface Props {
 const { version } = Astro.props;
 
 const versions = [
-    { number: 1, name: 'Лист' },
-    { number: 2, name: 'Витрина' },
-    { number: 3, name: 'Хаб' },
+    { number: 1, name: 'Сборная' },
+    { number: 2, name: 'Плакат' },
+    { number: 3, name: 'Конспект' },
 ] as const;
 
 // Сервер разработки показывает внизу по центру панель инструментов Astro. Панель проверки
@@ -24,35 +24,23 @@ const versions = [
 const development = import.meta.env.DEV;
 ---
 
-<aside class:list={['review', 'mono', { 'review--development': development }]} aria-label="Панель проверки">
-    <div class="review__group">
-        <span class="review__label">Версия</span>
-        <div class="review__options">
-            {
-                versions.map((item) => (
-                    <a
-                        href={withBase(`/v${item.number}/`)}
-                        aria-current={item.number === version ? 'page' : undefined}
-                    >
-                        {item.number} {item.name}
-                    </a>
-                ))
-            }
-        </div>
+<aside class:list={['review', { 'review--development': development }]} aria-label="Панель проверки">
+    <div class="review__options">
+        {
+            versions.map((item) => (
+                <a href={withBase(`/v${item.number}/`)} aria-current={item.number === version ? 'page' : undefined}>
+                    {item.number} {item.name}
+                </a>
+            ))
+        }
     </div>
-    <div class="review__group">
-        <span class="review__label">Шрифт</span>
-        <div class="review__options">
-            <button type="button" data-font="plex" aria-pressed="false">IBM Plex</button>
-            <button type="button" data-font="golos" aria-pressed="false">Golos</button>
-        </div>
+    <div class="review__options">
+        <button type="button" data-font="plex" aria-pressed="false">IBM Plex</button>
+        <button type="button" data-font="golos" aria-pressed="false">Golos</button>
     </div>
-    <div class="review__group">
-        <span class="review__label">Тема</span>
-        <div class="review__options">
-            <button type="button" data-theme="light" aria-pressed="false">светлая</button>
-            <button type="button" data-theme="dark" aria-pressed="false">тёмная</button>
-        </div>
+    <div class="review__options">
+        <button type="button" data-theme="light" aria-pressed="false">Светлая</button>
+        <button type="button" data-theme="dark" aria-pressed="false">Тёмная</button>
     </div>
 </aside>
 
@@ -64,7 +52,7 @@ const development = import.meta.env.DEV;
         try {
             localStorage.setItem(`weragen-site:${key}`, value);
         } catch {
-            // Хранилище недоступно в приватном режиме: выбор действует до перезагрузки.
+            // Хранилище недоступно в приватном режиме, выбор действует до перезагрузки.
         }
     }
 
@@ -72,7 +60,7 @@ const development = import.meta.env.DEV;
         return root.dataset.font ?? 'plex';
     }
 
-    /** Пока тема не выбрана, действует системная: кнопка отмечает именно её. */
+    /** Пока тема не выбрана, действует системная, и кнопка отмечает именно её. */
     function currentTheme(): string {
         return root.dataset.theme ?? (darkQuery.matches ? 'dark' : 'light');
     }
@@ -118,13 +106,14 @@ const development = import.meta.env.DEV;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 6px 18px;
+        gap: 8px;
         width: max-content;
         max-width: calc(100% - 24px);
-        padding: 8px 12px;
+        padding: 8px;
         background: var(--bg);
         border: 1px solid var(--fg);
-        font-size: 12px;
+        border-radius: 12px;
+        font-size: 14px;
         line-height: 1.2;
     }
 
@@ -132,29 +121,17 @@ const development = import.meta.env.DEV;
         bottom: 64px;
     }
 
-    .review__group {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .review__label {
-        color: var(--muted);
-    }
-
     .review__options {
         display: flex;
-        border: 1px solid var(--line);
+        border-radius: 6px;
+        overflow: hidden;
+        background: var(--surface);
     }
 
     .review__options > * {
-        padding: 5px 9px;
+        padding: 8px 12px;
         text-decoration: none;
         white-space: nowrap;
-    }
-
-    .review__options > * + * {
-        border-left: 1px solid var(--line);
     }
 
     .review__options > [aria-current='page'],
@@ -163,24 +140,20 @@ const development = import.meta.env.DEV;
         color: var(--bg);
     }
 
-    .review__options > :not([aria-current='page']):not([aria-pressed='true']):hover {
-        background: var(--surface);
-    }
-
     @media (max-width: 720px) {
         .review {
             bottom: 8px;
-            gap: 6px 12px;
-            padding: 6px 8px;
-            font-size: 11px;
+            gap: 6px;
+            padding: 6px;
+            font-size: 13px;
         }
 
         .review--development {
             bottom: 60px;
         }
 
-        .review__label {
-            display: none;
+        .review__options > * {
+            padding: 7px 9px;
         }
     }
 </style>

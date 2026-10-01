@@ -1,5 +1,5 @@
 /*
- * Общая основа трёх версий лендинга: переменные, сброс и элементы, одинаковые везде.
+ * Общая основа трёх вариантов лендинга: переменные, сброс и элементы, одинаковые везде.
  *
  * Оформление чёрно-белое. Цвета заданы переменными, поэтому тёмная тема получается
  * заменой значений, а не отдельными правилами. Шрифт текста тоже переменная: панель
@@ -20,10 +20,9 @@
 
     --bg: #ffffff;
     --fg: #0c0c0c;
-    --muted: #575757;
-    --faint: #8c8c8c;
+    --muted: #595959;
     --line: #e2e2e2;
-    --surface: #f5f5f5;
+    --surface: #f4f4f4;
     /* Перевёрнутые разделы: тёмный блок на светлой странице и наоборот. */
     --invert-bg: #0c0c0c;
     --invert-fg: #f5f5f5;
@@ -35,10 +34,10 @@
     --radius: 0px;
     /*
      * Наибольший размер главного заголовка, при котором неразрывная строка
-     * «для ИИ-автоматизаций» помещается в ширину страницы. Строка занимает около 11em
-     * в обоих шрифтах, делитель взят с запасом.
+     * "для ИИ-автоматизаций" помещается в ширину страницы. Жирная строка занимает
+     * около 11.5em в обоих шрифтах, делитель взят с запасом.
      */
-    --title-fit: calc((100vw - 2 * var(--gutter)) / 11.4);
+    --title-fit: calc((100vw - 2 * var(--gutter)) / 12);
 
     color-scheme: light;
 }
@@ -53,9 +52,8 @@
         --bg: #0b0b0b;
         --fg: #ededed;
         --muted: #a6a6a6;
-        --faint: #737373;
         --line: #262626;
-        --surface: #151515;
+        --surface: #161616;
         --invert-bg: #ededed;
         --invert-fg: #0b0b0b;
         --invert-muted: #4d4d4d;
@@ -68,9 +66,8 @@
     --bg: #0b0b0b;
     --fg: #ededed;
     --muted: #a6a6a6;
-    --faint: #737373;
     --line: #262626;
-    --surface: #151515;
+    --surface: #161616;
     --invert-bg: #ededed;
     --invert-fg: #0b0b0b;
     --invert-muted: #4d4d4d;
@@ -87,7 +84,7 @@
 html {
     font-family: var(--font-sans);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.55;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-behavior: smooth;
@@ -113,9 +110,7 @@ ul,
 ol,
 dl,
 dd,
-figure,
-pre,
-table {
+figure {
     margin: 0;
 }
 
@@ -129,7 +124,7 @@ h1,
 h2,
 h3,
 h4 {
-    font-weight: 600;
+    font-weight: 700;
     text-wrap: balance;
 }
 
@@ -167,20 +162,15 @@ button {
     margin-inline: auto;
 }
 
-.mono {
-    font-family: var(--font-mono);
-}
-
 .button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    min-height: 46px;
-    padding: 0 22px;
+    min-height: 50px;
+    padding: 0 26px;
     border: 1px solid var(--fg);
     border-radius: var(--button-radius, var(--radius));
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
     line-height: 1.2;
     text-decoration: none;
