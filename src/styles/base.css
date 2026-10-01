@@ -1,0 +1,122 @@
+/*
+ * Основа страницы: переменные, сброс и общие элементы.
+ *
+ * Тема одна, тёмная. Часть блоков набрана наоборот, тёмным по светлому: для них заданы
+ * переменные со словом light. Цвет есть только у раздела о помощи.
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+    --bg: #0b0b0b;
+    --fg: #ededed;
+    --muted: #a6a6a6;
+    --line: #2a2a2a;
+    /* Заливка карточек на тёмной странице. */
+    --surface: #171717;
+    /* Светлые блоки на тёмной странице. */
+    --light-bg: #ededed;
+    --light-fg: #0b0b0b;
+    --light-muted: #4d4d4d;
+    --light-line: #cfcfcf;
+
+    --gutter: 20px;
+    --container: 1200px;
+    /*
+     * Наибольший размер главного заголовка, при котором неразрывная строка
+     * "для ИИ-автоматизаций" помещается в ширину страницы. Жирная строка занимает
+     * около 11.5em, делитель взят с запасом.
+     */
+    --title-fit: calc((100vw - 2 * var(--gutter)) / 12);
+
+    color-scheme: dark;
+}
+
+@media (min-width: 768px) {
+    :root {
+        --gutter: 40px;
+    }
+}
+
+html {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+    margin: 0;
+}
+
+ul,
+ol {
+    padding: 0;
+    list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 700;
+    text-wrap: balance;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+}
+
+:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+.container {
+    width: min(100% - 2 * var(--gutter), var(--container));
+    margin-inline: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}

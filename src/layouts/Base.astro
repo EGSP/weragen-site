@@ -1,0 +1,38 @@
+---
+import '@fontsource/ibm-plex-sans/cyrillic-400.css';
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/cyrillic-500.css';
+import '@fontsource/ibm-plex-sans/latin-500.css';
+import '@fontsource/ibm-plex-sans/cyrillic-700.css';
+import '@fontsource/ibm-plex-sans/latin-700.css';
+import '@fontsource/ibm-plex-mono/cyrillic-400.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/cyrillic-500.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
+import '../styles/base.css';
+
+interface Props {
+    title: string;
+    description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#0b0b0b" />
+        <!-- Лендинг ещё согласуется и пока не предназначен для поисковиков. -->
+        <meta name="robots" content="noindex" />
+        <meta name="generator" content={Astro.generator} />
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>

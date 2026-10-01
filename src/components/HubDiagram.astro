@@ -1,0 +1,197 @@
+---
+/**
+ * Схема размещения платформы: сервисы организации, weragen и локальные модели находятся
+ * внутри контура, провайдеры моделей снаружи. Схема показывает главное для организации:
+ * границу контура пересекают только запросы к подключённым провайдерам.
+ */
+const services = ['Сервис на Python', 'Сервис на TypeScript', 'Сервис на Go', 'ИИ-агент разработчика'];
+
+const modules = ['Модели', 'Очередь и лимиты', 'Агенты', 'Инструменты MCP и навыки', 'Воркфлоу', 'Журнал'];
+
+const providers = ['Yandex', 'Сбер', 'другие по выбору'];
+---
+
+<figure class="hub">
+    <div class="hub__perimeter">
+        <span class="hub__tag">Контур организации</span>
+        <div class="hub__box">
+            <p class="hub__title">Сервисы организации</p>
+            <ul>
+                {services.map((item) => <li>{item}</li>)}
+            </ul>
+        </div>
+        <div class="hub__link" aria-hidden="true"><span>API</span></div>
+        <div class="hub__box hub__box--core">
+            <p class="hub__title">weragen</p>
+            <ul>
+                {modules.map((item) => <li>{item}</li>)}
+            </ul>
+        </div>
+        <div class="hub__link" aria-hidden="true"><span>запросы</span></div>
+        <div class="hub__box">
+            <p class="hub__title">Локальные модели</p>
+            <ul>
+                <li>Сервер моделей организации</li>
+            </ul>
+        </div>
+    </div>
+    <div class="hub__outside">
+        <div class="hub__down" aria-hidden="true"></div>
+        <p class="hub__note">Границу контура пересекают только запросы к подключённым провайдерам</p>
+        <div class="hub__box hub__box--providers">
+            <p class="hub__title">Провайдеры моделей</p>
+            <ul>
+                {providers.map((item) => <li>{item}</li>)}
+            </ul>
+        </div>
+    </div>
+</figure>
+
+<style>
+    .hub {
+        container-type: inline-size;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    .hub__perimeter {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1.2fr) 64px minmax(0, 1fr);
+        align-items: center;
+        padding: 40px 24px 32px;
+        border: 1px dashed var(--fg);
+    }
+
+    .hub__tag {
+        position: absolute;
+        top: -12px;
+        left: 16px;
+        padding: 0 8px;
+        background: var(--bg);
+    }
+
+    .hub__box {
+        padding: 16px 18px;
+        border: 1px solid var(--fg);
+        background: var(--bg);
+    }
+
+    .hub__box--core {
+        background: var(--fg);
+        color: var(--bg);
+    }
+
+    .hub__title {
+        padding-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .hub__box li {
+        padding: 3px 0;
+        color: var(--muted);
+    }
+
+    .hub__box--core li {
+        color: inherit;
+        opacity: 0.78;
+    }
+
+    /* Связь между блоками: линия с подписью над ней. */
+    .hub__link {
+        position: relative;
+        border-top: 1px solid var(--fg);
+    }
+
+    .hub__link span {
+        position: absolute;
+        left: 50%;
+        bottom: 4px;
+        transform: translateX(-50%);
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+    .hub__outside {
+        position: relative;
+        display: grid;
+        justify-items: center;
+    }
+
+    /* Линия начинается у нижнего края блока weragen и выходит за пунктирную границу. */
+    .hub__down {
+        position: relative;
+        z-index: 1;
+        height: 100px;
+        margin-top: -32px;
+        border-left: 1px solid var(--fg);
+    }
+
+    .hub__note {
+        position: absolute;
+        top: 14px;
+        left: calc(50% + 16px);
+        max-width: 320px;
+        font-size: 13px;
+        line-height: 19px;
+        color: var(--muted);
+    }
+
+    .hub__box--providers {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px 20px;
+    }
+
+    .hub__box--providers .hub__title {
+        padding-bottom: 0;
+    }
+
+    .hub__box--providers ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 20px;
+    }
+
+    @container (max-width: 760px) {
+        .hub__perimeter {
+            grid-template-columns: minmax(0, 1fr);
+            padding: 28px 16px 20px;
+        }
+
+        .hub__link {
+            justify-self: center;
+            width: 0;
+            height: 32px;
+            border-top: 0;
+            border-left: 1px solid var(--fg);
+        }
+
+        .hub__link span {
+            left: 10px;
+            bottom: 7px;
+            transform: none;
+        }
+
+        /*
+         * В столбик нижним блоком контура оказываются локальные модели. Линия к провайдерам
+         * поэтому начинается от самой границы контура: иначе она выглядела бы связью
+         * локальных моделей с провайдерами.
+         */
+        .hub__down {
+            height: 40px;
+            margin-top: 0;
+        }
+
+        /* Рядом с линией подписи тесно, поэтому она становится подписью под блоком провайдеров. */
+        .hub__note {
+            position: static;
+            order: 3;
+            max-width: none;
+            padding-top: 12px;
+            text-align: center;
+        }
+    }
+</style>

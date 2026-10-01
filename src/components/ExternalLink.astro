@@ -1,0 +1,59 @@
+---
+/**
+ * Ссылка на внешний ресурс: текст и значок перехода.
+ *
+ * Все внешние ссылки на странице выглядят одинаково и не оформляются кнопками. Размер
+ * и цвет ссылка берёт у окружающего текста. Открывается она в новой вкладке, поэтому
+ * значок перехода стоит всегда.
+ */
+interface Props {
+    href: string;
+    /** Подчёркивание текста. В шапке и подвале ссылки стоят в ряду неподчёркнутых, там оно выключено. */
+    underline?: boolean;
+}
+
+const { href, underline = true } = Astro.props;
+---
+
+<a class:list={['external', { 'external--plain': !underline }]} href={href} target="_blank" rel="noopener noreferrer">
+    <span><slot /></span>
+    <svg viewBox="0 0 12 12" aria-hidden="true">
+        <path d="M3 9 9 3M4.4 3H9v4.6"></path>
+    </svg>
+</a>
+
+<style>
+    .external {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.32em;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .external span {
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.22em;
+    }
+
+    .external--plain span {
+        text-decoration: none;
+    }
+
+    .external:hover span {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+    }
+
+    svg {
+        flex: none;
+        width: 0.68em;
+        height: 0.68em;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+</style>
