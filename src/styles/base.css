@@ -1,8 +1,8 @@
 /*
  * Основа страницы: переменные, сброс и общие элементы.
  *
- * Оформление чёрно-белое, цвет есть только у раздела о помощи. Цвета заданы переменными,
- * поэтому тёмная тема получается заменой значений, а не отдельными правилами.
+ * Тема одна, тёмная. Часть блоков набрана наоборот, тёмным по светлому: для них заданы
+ * переменные со словом light. Цвет есть только у раздела о помощи.
  */
 
 *,
@@ -15,20 +15,20 @@
     --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
-    --bg: #ffffff;
-    --fg: #0c0c0c;
-    --muted: #595959;
-    --line: #e2e2e2;
-    --surface: #f4f4f4;
-    /* Перевёрнутые разделы: тёмный блок на светлой странице и наоборот. */
-    --invert-bg: #0c0c0c;
-    --invert-fg: #f5f5f5;
-    --invert-muted: #a8a8a8;
-    --invert-line: #2e2e2e;
+    --bg: #0b0b0b;
+    --fg: #ededed;
+    --muted: #a6a6a6;
+    --line: #2a2a2a;
+    /* Заливка карточек на тёмной странице. */
+    --surface: #171717;
+    /* Светлые блоки на тёмной странице. */
+    --light-bg: #ededed;
+    --light-fg: #0b0b0b;
+    --light-muted: #4d4d4d;
+    --light-line: #cfcfcf;
 
     --gutter: 20px;
     --container: 1200px;
-    --radius: 0px;
     /*
      * Наибольший размер главного заголовка, при котором неразрывная строка
      * "для ИИ-автоматизаций" помещается в ширину страницы. Жирная строка занимает
@@ -36,35 +36,6 @@
      */
     --title-fit: calc((100vw - 2 * var(--gutter)) / 12);
 
-    color-scheme: light;
-}
-
-/* Тёмная тема берётся из настроек системы, пока она не выбрана переключателем. */
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
-        --bg: #0b0b0b;
-        --fg: #ededed;
-        --muted: #a6a6a6;
-        --line: #262626;
-        --surface: #161616;
-        --invert-bg: #ededed;
-        --invert-fg: #0b0b0b;
-        --invert-muted: #4d4d4d;
-        --invert-line: #cfcfcf;
-        color-scheme: dark;
-    }
-}
-
-:root[data-theme='dark'] {
-    --bg: #0b0b0b;
-    --fg: #ededed;
-    --muted: #a6a6a6;
-    --line: #262626;
-    --surface: #161616;
-    --invert-bg: #ededed;
-    --invert-fg: #0b0b0b;
-    --invert-muted: #4d4d4d;
-    --invert-line: #cfcfcf;
     color-scheme: dark;
 }
 
@@ -90,8 +61,6 @@ body {
     color: var(--fg);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    /* Место под переключатель темы, чтобы он не закрывал конец страницы. */
-    padding-bottom: 96px;
 }
 
 h1,
@@ -131,15 +100,6 @@ a {
     text-underline-offset: 0.22em;
 }
 
-button {
-    font: inherit;
-    color: inherit;
-    background: none;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-}
-
 :focus-visible {
     outline: 2px solid var(--fg);
     outline-offset: 3px;
@@ -155,51 +115,8 @@ button {
     margin-inline: auto;
 }
 
-.button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 50px;
-    padding: 0 26px;
-    border: 1px solid var(--fg);
-    border-radius: var(--button-radius, var(--radius));
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.2;
-    text-decoration: none;
-    white-space: nowrap;
-    transition:
-        background-color 0.15s,
-        color 0.15s;
-}
-
-.button--solid {
-    background: var(--fg);
-    color: var(--bg);
-}
-
-.button--solid:hover {
-    background: transparent;
-    color: var(--fg);
-}
-
-.button--outline:hover {
-    background: var(--fg);
-    color: var(--bg);
-}
-
-.actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
-    }
-
-    * {
-        transition: none !important;
     }
 }

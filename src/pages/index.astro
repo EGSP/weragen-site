@@ -5,21 +5,15 @@
  * Страница начинается с того, что даёт платформа, и до самого конца не говорит о помощи
  * и внедрении: этому отведён последний раздел. Он единственный на странице цветной.
  * Мелких подписей, нумерации и схем интерфейса здесь нет, из изображений только схема
- * контура организации.
+ * контура организации. Кнопок тоже нет: всё, что уводит со страницы, оформлено ссылкой
+ * со значком перехода.
  */
 import Base from '../layouts/Base.astro';
 import HubDiagram from '../components/HubDiagram.astro';
+import ExternalLink from '../components/ExternalLink.astro';
 import { withBase } from '../lib/url';
 import { typograph as t } from '../lib/typograph';
 import { site, lead, highlights, features, load, perimeter, control, scope, open, help } from '../data/content';
-
-const navigation = [
-    { id: 'features', label: 'Возможности' },
-    { id: 'perimeter', label: 'Контур' },
-    { id: 'control', label: 'Управление' },
-    { id: 'scope', label: 'Границы' },
-    { id: 'help', label: 'Помощь' },
-];
 ---
 
 <Base title={site.title} description={site.description}>
@@ -27,10 +21,10 @@ const navigation = [
         <header class="head">
             <div class="container head__inner">
                 <a class="mark" href={withBase('/')}>weragen</a>
-                <nav class="head__nav" aria-label="Разделы страницы">
-                    {navigation.map((item) => <a href={`#${item.id}`}>{item.label}</a>)}
+                <nav class="head__links" aria-label="Ссылки">
+                    <a href="#help">Помощь</a>
+                    <ExternalLink href={site.repository} underline={false}>GitHub</ExternalLink>
                 </nav>
-                <a class="button button--solid head__button" href={site.repository}>GitHub</a>
             </div>
         </header>
 
@@ -38,9 +32,9 @@ const navigation = [
             <section class="hero container">
                 <h1>{site.headingStart} <span class="keep">{site.headingEnd}</span></h1>
                 <p class="hero__lead">{t(lead)}</p>
-                <div class="actions">
-                    <a class="button button--solid" href={site.repository}>{site.sourceButton}</a>
-                </div>
+                <p class="hero__link">
+                    <ExternalLink href={site.repository}>{site.sourceLink}</ExternalLink>
+                </p>
                 <ul class="highlights">
                     {
                         highlights.map((item) => (
@@ -55,7 +49,7 @@ const navigation = [
 
             <section class="section container" id="features">
                 <h2>{t(features.title)}</h2>
-                <ul class="features">
+                <ul class="cards cards--filled">
                     {
                         features.items.map((item) => (
                             <li>
@@ -68,7 +62,7 @@ const navigation = [
             </section>
 
             <section class="section container" id="load">
-                <div class="panel">
+                <div class="panel light">
                     <h2>{t(load.title)}</h2>
                     <div>
                         <p>{t(load.text)}</p>
@@ -87,8 +81,8 @@ const navigation = [
                 </div>
             </section>
 
-            <section class="invert" id="control">
-                <div class="container invert__grid">
+            <section class="band light" id="control">
+                <div class="container band__grid">
                     <div>
                         <h2>{t(control.title)}</h2>
                         <p class="lead">{t(control.text)}</p>
@@ -123,9 +117,9 @@ const navigation = [
             <section class="section container closing" id="open">
                 <h2>{t(open.title)}</h2>
                 <p class="lead">{t(open.text)}</p>
-                <div class="actions">
-                    <a class="button button--solid" href={site.repository}>{site.sourceButton}</a>
-                </div>
+                <p class="closing__link">
+                    <ExternalLink href={site.repository}>{site.sourceLink}</ExternalLink>
+                </p>
             </section>
 
             <section class="help" id="help">
@@ -135,12 +129,14 @@ const navigation = [
                         <div class="help__card" id="community">
                             <h3>{help.community.title}</h3>
                             <p>{t(help.community.text)}</p>
-                            <a class="button button--solid" href={site.issues}>{help.community.button}</a>
+                            <p class="help__action">
+                                <ExternalLink href={site.issues}>{help.community.link}</ExternalLink>
+                            </p>
                         </div>
                         <div class="help__card" id="turnkey">
                             <h3>{help.turnkey.title}</h3>
                             <p>{t(help.turnkey.text)}</p>
-                            <p class="help__note">{t(help.turnkey.contactNote)}</p>
+                            <p class="help__action">{t(help.turnkey.contactNote)}</p>
                         </div>
                     </div>
                 </div>
@@ -165,7 +161,7 @@ const navigation = [
                 <div>
                     <p class="foot__title">Проект</p>
                     <ul>
-                        <li><a href={site.repository}>Исходный код</a></li>
+                        <li><ExternalLink href={site.repository} underline={false}>{site.sourceLink}</ExternalLink></li>
                         <li><a href="#open">Открытый код</a></li>
                     </ul>
                 </div>
@@ -186,7 +182,6 @@ const navigation = [
     .page {
         --container: 1200px;
         --radius: 16px;
-        --button-radius: 999px;
     }
 
     .mark {
@@ -210,6 +205,16 @@ const navigation = [
         color: var(--muted);
     }
 
+    /* Светлый блок на тёмной странице. Вложенные элементы берут цвета из тех же переменных. */
+    .light {
+        --bg: var(--light-bg);
+        --fg: var(--light-fg);
+        --muted: var(--light-muted);
+        --line: var(--light-line);
+        background: var(--bg);
+        color: var(--fg);
+    }
+
     .head {
         position: sticky;
         top: 0;
@@ -221,30 +226,25 @@ const navigation = [
     .head__inner {
         display: flex;
         align-items: center;
-        gap: 44px;
+        justify-content: space-between;
         height: 68px;
     }
 
-    .head__nav {
+    .head__links {
         display: flex;
-        gap: 28px;
-        font-size: 16px;
+        align-items: center;
+        gap: 32px;
+        font-size: 17px;
+        font-weight: 500;
     }
 
-    .head__nav a {
+    .head__links > a {
         text-decoration: none;
-        color: var(--muted);
     }
 
-    .head__nav a:hover {
-        color: var(--fg);
-    }
-
-    .head__button {
-        min-height: 40px;
-        margin-left: auto;
-        padding: 0 20px;
-        font-size: 15px;
+    .head__links > a:hover {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
     }
 
     .hero {
@@ -263,10 +263,15 @@ const navigation = [
 
     .hero__lead {
         max-width: 56ch;
-        padding: 28px 0 36px;
-        font-size: 21px;
-        line-height: 1.5;
+        padding: 28px 0 32px;
+        font-size: 22px;
+        line-height: 1.45;
         color: var(--muted);
+    }
+
+    .hero__link {
+        font-size: 21px;
+        font-weight: 500;
     }
 
     .highlights {
@@ -304,22 +309,32 @@ const navigation = [
         padding-top: 128px;
     }
 
-    .features {
+    .cards {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 52px 56px;
+        gap: 16px;
         padding-top: 56px;
     }
 
-    .features h3 {
-        font-size: 22px;
-        line-height: 1.25;
-        letter-spacing: -0.012em;
+    .cards li {
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
     }
 
-    .features p {
+    /* Карточки возможностей залиты, карточки "чем не является" оставлены с одной границей. */
+    .cards--filled li {
+        background: var(--surface);
+    }
+
+    .cards h3 {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .cards p {
         padding-top: 10px;
-        font-size: 17px;
+        font-size: 16.5px;
         color: var(--muted);
     }
 
@@ -328,7 +343,6 @@ const navigation = [
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 64px;
         padding: 72px 64px;
-        background: var(--surface);
         border-radius: 24px;
     }
 
@@ -354,19 +368,12 @@ const navigation = [
         padding-top: 64px;
     }
 
-    /* Перевёрнутый раздел: вложенные блоки берут цвета из тех же переменных и подстраиваются сами. */
-    .invert {
-        --bg: var(--invert-bg);
-        --fg: var(--invert-fg);
-        --muted: var(--invert-muted);
-        --line: var(--invert-line);
+    .band {
         margin-top: 128px;
         padding: 120px 0;
-        background: var(--bg);
-        color: var(--fg);
     }
 
-    .invert__grid {
+    .band__grid {
         display: grid;
         grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
         align-items: start;
@@ -395,45 +402,19 @@ const navigation = [
         color: var(--muted);
     }
 
-    .cards {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-        padding-top: 56px;
-    }
-
-    .cards li {
-        padding: 28px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-    }
-
-    .cards h3 {
-        font-size: 19px;
-        line-height: 1.3;
-    }
-
-    .cards p {
-        padding-top: 10px;
-        font-size: 16px;
-        color: var(--muted);
-    }
-
     .closing {
         display: grid;
         justify-items: center;
         text-align: center;
     }
 
-    .closing .actions {
-        justify-content: center;
-        padding-top: 36px;
+    .closing__link {
+        padding-top: 28px;
+        font-size: 21px;
+        font-weight: 500;
     }
 
-    /*
-     * Раздел о помощи. Цвет у него свой и от темы не зависит: жёлтый фон с тёмным текстом
-     * читается и на светлой, и на тёмной странице.
-     */
+    /* Раздел о помощи. Единственный цветной блок на странице. */
     .help {
         --bg: #ffd84a;
         --fg: #0c0c0c;
@@ -454,7 +435,6 @@ const navigation = [
     .help__card {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
         gap: 14px;
         padding: 40px;
         background: rgb(255 255 255 / 0.55);
@@ -473,17 +453,10 @@ const navigation = [
         color: var(--muted);
     }
 
-    /* Кнопка и строка о связи прижаты к низу карточки, чтобы стоять на одной линии. */
-    .help__card .button,
-    .help__card .help__note {
+    /* Ссылка и строка о связи прижаты к низу карточки, чтобы стоять на одной линии. */
+    .help__card .help__action {
         margin-top: auto;
-    }
-
-    .help__card .help__note {
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        font-size: 17px;
+        padding-top: 14px;
         font-weight: 500;
         color: var(--fg);
     }
@@ -510,31 +483,27 @@ const navigation = [
 
     .foot__grid li {
         padding: 4px 0;
-    }
-
-    .foot__grid a {
-        text-decoration: none;
         color: var(--muted);
     }
 
-    .foot__grid a:hover {
+    .foot__grid li > a {
+        text-decoration: none;
+    }
+
+    .foot__grid li > a:hover {
         color: var(--fg);
     }
 
     .foot__bottom {
-        padding: 20px 0 8px;
+        padding: 20px 0 40px;
         border-top: 1px solid var(--line);
         font-size: 15px;
         color: var(--muted);
     }
 
     @media (max-width: 1000px) {
-        .features {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
         .panel,
-        .invert__grid {
+        .band__grid {
             grid-template-columns: minmax(0, 1fr);
             gap: 40px;
         }
@@ -559,13 +528,6 @@ const navigation = [
         }
     }
 
-    /* Пять ссылок, название и кнопка помещаются в шапку только на широком экране. */
-    @media (max-width: 900px) {
-        .head__nav {
-            display: none;
-        }
-    }
-
     @media (max-width: 760px) {
         .hero {
             padding-top: 56px;
@@ -581,7 +543,7 @@ const navigation = [
         }
 
         .hero__lead {
-            font-size: 19px;
+            font-size: 20px;
         }
 
         .highlights {
@@ -592,7 +554,6 @@ const navigation = [
             padding-top: 88px;
         }
 
-        .features,
         .cards {
             grid-template-columns: minmax(0, 1fr);
             padding-top: 40px;
@@ -603,7 +564,7 @@ const navigation = [
             border-radius: 20px;
         }
 
-        .invert {
+        .band {
             margin-top: 88px;
             padding: 80px 0;
         }
@@ -624,10 +585,6 @@ const navigation = [
 
         .help__card h3 {
             font-size: 24px;
-        }
-
-        .help__card .help__note {
-            min-height: 0;
         }
     }
 

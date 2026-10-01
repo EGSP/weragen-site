@@ -10,7 +10,6 @@ import '@fontsource/ibm-plex-mono/latin-400.css';
 import '@fontsource/ibm-plex-mono/cyrillic-500.css';
 import '@fontsource/ibm-plex-mono/latin-500.css';
 import '../styles/base.css';
-import ThemeSwitch from '../components/ThemeSwitch.astro';
 
 interface Props {
     title: string;
@@ -27,28 +26,13 @@ const { title, description } = Astro.props;
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#0b0b0b" />
         <!-- Лендинг ещё согласуется и пока не предназначен для поисковиков. -->
         <meta name="robots" content="noindex" />
         <meta name="generator" content={Astro.generator} />
-        <!--
-            Тема применяется до первой отрисовки, иначе страница мигнула бы оформлением
-            по умолчанию. Значение из адреса (?theme=dark) важнее сохранённого.
-        -->
-        <script is:inline>
-            (function () {
-                try {
-                    var theme =
-                        new URLSearchParams(location.search).get('theme') ||
-                        localStorage.getItem('weragen-site:theme');
-                    if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-                } catch (error) {
-                    // Хранилище недоступно в приватном режиме, остаётся системная тема.
-                }
-            })();
-        </script>
     </head>
     <body>
         <slot />
-        <ThemeSwitch />
     </body>
 </html>
