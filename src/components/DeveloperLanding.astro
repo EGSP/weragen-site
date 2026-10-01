@@ -1,0 +1,38 @@
+<!-- Технический вариант начинается с контракта подключения и поясняет границы ответственности. -->
+<div class="developer-landing">
+  <header class="developer-header page-width">
+    <a class="wordmark" href="#content">weragen</a>
+    <nav aria-label="Навигация по странице"><a href="#platform">Подключение</a><a href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">GitHub</a></nav>
+  </header>
+  <section class="developer-opening page-width" aria-labelledby="developer-title">
+    <h1 id="developer-title">Подключите свои программы<br/>к общему API</h1>
+    <div class="developer-opening-copy"><p>Открытая платформа для ИИ-автоматизаций. Ваши программы используют общий доступ к моделям, агентам и инструментам через API.</p><a class="solid-button" href="#platform">Разобраться с подключением</a></div>
+  </section>
+  <section class="developer-contract page-width" id="platform-2" data-anchor="platform" aria-labelledby="developer-contract-title">
+    <div class="contract-copy">
+      <h2 id="developer-contract-title">Запросы к моделям<br/>через weragen</h2>
+      <p>В запросе укажите общее имя модели. В настройках платформы свяжите это имя с провайдером. Если понадобится другая модель, контракт с программой сохранится.</p>
+      <p>В концепции предусмотрен API, совместимый с OpenAI. Пример рядом показывает обращение к модели smart через этот интерфейс.</p>
+    </div>
+    <div class="request-example">
+      <div class="request-code"><pre aria-label="Пример тела запроса к API"><code>{`{
+  "model": "smart",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Составь сводку"
+    }
+  ]
+}`}</code></pre></div>
+      <p>Тело запроса для вашего клиента</p>
+    </div>
+  </section>
+  <section class="developer-responsibility page-width" id="approach-2" data-anchor="approach" aria-labelledby="developer-responsibility-title">
+    <h2 id="developer-responsibility-title">Где проходит граница</h2>
+    <div class="responsibility-grid">
+      <div><h3>В вашем приложении</h3><p>Бизнес-логика, входные данные и связь с системами организации. Исполнитель работает как отдельный сервис или запускается платформой. Язык выбираете вы.</p></div>
+      <div><h3>В weragen</h3><p>Подключения к моделям, общие квоты и очередь запросов. Агенты используют подключённые инструменты. История исполнения собирается в журнале платформы.</p></div>
+    </div>
+    <div class="developer-end"><p>Платформа находится в разработке. Код и текущий ход работы доступны в репозитории.</p><a class="plain-link" href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">Открыть репозиторий</a></div>
+  </section>
+</div>

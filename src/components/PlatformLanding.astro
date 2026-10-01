@@ -1,0 +1,33 @@
+---
+import Hub from './Hub.astro';
+---
+<!-- Вариант сохраняет широкую композицию со схемой и раскрывает возможности без служебных подписей. -->
+<div class="platform-landing page-width">
+  <header class="platform-header">
+    <a class="wordmark" href="#content">weragen</a>
+    <nav aria-label="Навигация по странице"><a href="#platform">Возможности</a><a href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">Исходный код</a></nav>
+  </header>
+  <section class="platform-opening" aria-labelledby="platform-title">
+    <div>
+      <p class="product-description">Открытая платформа для ИИ-автоматизаций</p>
+      <h1 id="platform-title">Общая платформа<br/><span>для ваших автоматизаций</span></h1>
+      <p class="platform-lead">Подключайте свои программы к weragen. Модели, агенты и инструменты будут доступны в одном месте. Платформа управляет общей нагрузкой и собирает историю исполнения.</p>
+      <a class="solid-button" href="#platform">Что умеет платформа</a>
+    </div>
+    <Hub />
+  </section>
+  <section class="platform-capabilities" id="platform" data-anchor="platform" aria-labelledby="platform-capabilities-title">
+    <div><h2 id="platform-capabilities-title">Модели и инструменты<br/>для разных процессов</h2><p>Каждой автоматизации нужны модели и инструменты. Настройте их в weragen и используйте в своих процессах.</p></div>
+    <div class="capability-list">
+      <div><h3>Модели без правок в программах</h3><p>Общие имена smart, medium и fast скрывают выбор конкретной модели. Провайдера можно заменить в настройках платформы.</p></div>
+      <div><h3>Нагрузка и квоты</h3><p>Запросы разных программ проходят через общие лимиты и очередь. Нагрузка на локальные модели и внешних провайдеров учитывается вместе.</p></div>
+      <div><h3>Агенты и инструменты</h3><p>Подключайте MCP, навыки и агентов в платформе. Используйте их в разных автоматизациях.</p></div>
+      <div><h3>История исполнения</h3><p>Смотрите шаги процесса, действия агентов и запросы к моделям в общем журнале.</p></div>
+    </div>
+  </section>
+  <section class="platform-ownership" id="approach" data-anchor="approach" aria-labelledby="platform-ownership-title">
+    <h2 id="platform-ownership-title">Логика остаётся<br/>в ваших программах</h2>
+    <div class="ownership-copy"><p>Исполнитель может работать как отдельный сервис или запускаться платформой. Для подключения нужен общий контракт API. Язык программирования выбираете вы.</p><p>Разверните weragen внутри организации. Подключите локальные модели или внешних провайдеров и определите, какие данные им отправлять.</p><p>Проект развивается с открытым кодом. Команда может помочь с внедрением и разработкой автоматизаций.</p><a class="plain-link" href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">Открыть репозиторий</a></div>
+  </section>
+  <footer class="quiet-footer">Проект в разработке</footer>
+</div>
