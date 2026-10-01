@@ -2,72 +2,43 @@
 import ExternalArrow from './ExternalArrow.astro';
 import GitHubIcon from './GitHubIcon.astro';
 ---
-<!-- Боковая панель сохраняет бренд при чтении. Секции меняют композицию, сохраняя общую типографику. -->
+<!-- Основной контейнер повторяет композицию третьего варианта из 8f091fd. Схема убрана по просьбе пользователя. -->
 <div class="site-layout" id="top">
   <aside class="brand-panel" aria-label="weragen">
     <strong class="wordmark">weragen</strong>
     <a class="source-card" href="https://github.com/EGSP/weragen" target="_blank" rel="noopener noreferrer" aria-label="open-source, репозиторий weragen на GitHub, откроется в новой вкладке"><GitHubIcon /><span>open-source</span><ExternalArrow /></a>
   </aside>
-  <main id="content">
-    <section class="hero section-space" aria-labelledby="hero-title">
-      <div class="section-container hero-grid">
-        <div class="hero-copy">
-          <h1 id="hero-title">Открытая платформа<br />для ИИ-<wbr />автоматизаций</h1>
-          <p class="hero-description">weragen ставится на серверах организации. Сервисы работают через неё с моделями, агентами и инструментами, а у себя держат только предметную логику.</p>
-          <div class="hero-links"><a href="#features">Возможности платформы</a><a href="#perimeter">Размещение и данные</a></div>
+  <main id="content" class="composition-3">
+    <section class="hero section-frame" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">Открытая платформа<br /><span class="muted-heading">для ИИ-<wbr />автоматизаций</span></h1>
+        <p class="hero-description">weragen ставится на серверах организации. Сервисы работают через неё с моделями, агентами и инструментами, а у себя держат только предметную логику.</p>
+        <div class="hero-actions"><a href="#platform">Возможности платформы</a><a href="#approach">Размещение и подключение</a></div>
+      </div>
+    </section>
+    <div class="platform-band">
+      <section class="platform-section section-frame" id="platform" aria-labelledby="platform-title">
+        <div class="section-introduction">
+          <h2 id="platform-title">Что берёт на себя платформа</h2>
+          <p>Подключения, квоты и инструменты становятся общими для ваших сервисов. Новая автоматизация использует то, что уже настроено в weragen.</p>
         </div>
-        <div class="platform-picture" role="img" aria-label="Сервисы организации обращаются к моделям, агентам и инструментам через weragen">
-          <div class="picture-services">Сервисы организации</div>
-          <div class="picture-platform">weragen</div>
-          <div class="picture-capabilities"><span>Модели</span><span>Агенты</span><span>Инструменты</span><span>Процессы</span></div>
+        <div class="benefit-grid">
+          <article class="benefit"><h3>Доступ к моделям</h3><p>Один адрес для всех сервисов. Сервис использует имя из ваших настроек. Модель за этим именем можно заменить без правок в коде.</p></article>
+          <article class="benefit"><h3>Нагрузка и квоты</h3><p>Запросы проходят через общую очередь. Платформа учитывает квоты провайдеров и нагрузку на локальные модели. Отложенный ответ сохраняется при обрыве связи.</p></article>
+          <article class="benefit"><h3>Агенты и инструменты</h3><p>Цикл агента идёт внутри платформы. Серверы MCP и навыки подключаются один раз и доступны разным сервисам. Ответ возвращается в нужной структуре.</p></article>
         </div>
+        <div class="history-strip"><h3>История исполнения</h3><p>Шаги сервисов, действия агентов и запросы к моделям собраны в одном журнале</p></div>
+      </section>
+    </div>
+    <section class="approach-section section-frame" id="approach" aria-labelledby="approach-title">
+      <div class="approach-heading"><h2 id="approach-title">Логика остаётся<br /><span class="muted-heading">в ваших сервисах</span></h2><p>Используйте привычный язык и свою инфраструктуру. Сценарий собирается из шагов, которые исполняют агенты или ваши программы.</p></div>
+      <div class="approach-content">
+        <article class="approach-row"><h3>Контур организации</h3><p>Локальные модели или внешних провайдеров выбираете вы. Наружу уходят только запросы к подключённым провайдерам. Сама weragen модели не запускает.</p></article>
+        <article class="approach-row"><h3>Ваши сервисы</h3><p>weragen запускает исполнителя или подключается к сервису, который уже работает. Обмен с учётными и производственными системами остаётся в вашем коде.</p></article>
+        <article class="approach-row"><h3>Открытый код</h3><p>Весь код платформы открыт, платной редакции нет. Мы зарабатываем на внедрении и разработке автоматизаций под задачи организации.</p></article>
       </div>
+      <div class="closing"><div><h3>Познакомьтесь с weragen</h3><p>Платформа находится в разработке. Исходный код, задачи и ход работы доступны в репозитории.</p></div><a class="resource-card" href="https://github.com/EGSP/weragen" target="_blank" rel="noopener noreferrer"><div class="resource-top"><GitHubIcon /><ExternalArrow /></div><strong>Исходный код</strong><span>GitHub<span class="sr-only">, откроется в новой вкладке</span></span></a></div>
     </section>
-    <section class="load-section section-space" id="load" aria-labelledby="load-title">
-      <div class="section-container load-grid">
-        <h2 id="load-title">Нагрузкой и квотами<br />управляет платформа</h2>
-        <div><p>Запросы всех сервисов проходят через общую очередь. Платформа учитывает квоты провайдеров и нагрузку на локальные модели.</p><p>Отложенный ответ сохраняется. При обрыве связи сервис может получить его позже.</p></div>
-      </div>
-    </section>
-    <section class="features-section section-space" id="features" aria-labelledby="features-title">
-      <div class="section-container">
-        <h2 id="features-title">Что берёт на себя платформа</h2>
-        <div class="feature-bento">
-          <article class="feature-models"><h3>Доступ к моделям</h3><p>Один адрес для всех сервисов. Провайдеры и локальные модели подключаются в платформе.</p><p>Сервис использует имя из ваших настроек. Модель за этим именем можно заменить без правок в коде.</p></article>
-          <article class="feature-agents"><h3>Агенты</h3><p>Цикл агента идёт внутри платформы. Сервис ставит задачу и получает ответ в нужной структуре.</p></article>
-          <article class="feature-tools"><h3>Инструменты и навыки</h3><p>Серверы MCP, навыки и агенты подключаются один раз и доступны разным сервисам.</p></article>
-          <article class="feature-workflows"><h3>Процессы</h3><p>Сценарий собирается из шагов. Шагом может быть агент или сервис на любом языке.</p></article>
-          <article class="feature-journal"><h3>Журнал</h3><p>В одной истории видно, что делали сервисы и агенты, какие запросы уходили к моделям.</p></article>
-        </div>
-      </div>
-    </section>
-    <section class="perimeter-section" id="perimeter" aria-labelledby="perimeter-title">
-      <div class="section-container">
-        <div class="perimeter-container">
-          <div class="perimeter-introduction"><h2 id="perimeter-title">Работает в контуре организации</h2><p>Где исполняются модели и что уходит наружу, решает организация. Сама weragen модели не запускает.</p></div>
-          <div class="perimeter-picture" role="img" aria-label="Внутри организации работают сервисы, weragen и локальные модели. Внешние провайдеры подключаются по выбору организации">
-            <div class="inside-perimeter"><div class="infrastructure-services">Ваши сервисы</div><div class="infrastructure-platform">weragen</div><div class="infrastructure-models">Локальные модели</div></div>
-            <div class="outside-perimeter"><strong>Внешние провайдеры</strong><p>Получают только запросы, которые вы им отправляете</p></div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="code-section section-space" aria-labelledby="code-title">
-      <div class="section-container code-grid">
-        <h2 id="code-title">Логика остаётся<br />в ваших сервисах</h2>
-        <div><p>Пишите автоматизации на привычном языке. weragen запускает исполнителя или подключается к сервису, который уже работает.</p><p>Обмен с учётными и производственными системами остаётся в вашем коде. Платформа отвечает за работу с ИИ.</p></div>
-      </div>
-    </section>
-    <section class="open-section section-space" id="open" aria-labelledby="open-title">
-      <div class="section-container">
-        <div class="open-introduction"><h2 id="open-title">Открыта целиком</h2><p>Весь код платформы открыт, платной редакции нет. Мы зарабатываем на внедрении и на разработке автоматизаций под задачи организации.</p></div>
-        <div class="project-links">
-          <a class="resource-card" href="https://github.com/EGSP/weragen" target="_blank" rel="noopener noreferrer"><div class="resource-top"><GitHubIcon /><ExternalArrow /></div><h3>Исходный код</h3><p>Посмотрите, как устроена платформа</p><span class="sr-only">Откроется в новой вкладке</span></a>
-          <a class="resource-card" href="https://github.com/EGSP/weragen/issues" target="_blank" rel="noopener noreferrer"><div class="resource-top"><ExternalArrow /></div><h3>Ход разработки</h3><p>Задачи и обсуждения проекта на GitHub</p><span class="sr-only">Откроется в новой вкладке</span></a>
-        </div>
-        <p class="project-status">weragen находится в разработке. Готовность возможностей указана в репозитории.</p>
-      </div>
-    </section>
-    <footer class="site-footer section-container"><p>weragen</p><a href="#top">В начало страницы</a></footer>
+    <footer class="site-footer section-frame"><p>weragen</p><a href="#top">В начало страницы</a></footer>
   </main>
 </div>
