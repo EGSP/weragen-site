@@ -1,0 +1,91 @@
+---
+/**
+ * Переключатель светлой и тёмной темы.
+ *
+ * Пока тема не выбрана, действует системная. Выбор хранится в браузере.
+ */
+
+// Сервер разработки показывает внизу по центру панель инструментов Astro. Переключатель
+// при нём поднимается выше, иначе одна панель закрывала бы другую.
+const development = import.meta.env.DEV;
+---
+
+<div class:list={['theme', { 'theme--development': development }]} role="group" aria-label="Тема оформления">
+    <button type="button" data-theme="light" aria-pressed="false">Светлая</button>
+    <button type="button" data-theme="dark" aria-pressed="false">Тёмная</button>
+</div>
+
+<script>
+    const root = document.documentElement;
+    const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.theme [data-theme]');
+
+    /** Пока тема не выбрана, действует системная, и кнопка отмечает именно её. */
+    function currentTheme(): string {
+        return root.dataset.theme ?? (darkQuery.matches ? 'dark' : 'light');
+    }
+
+    function refresh(): void {
+        buttons.forEach((button) => {
+            button.setAttribute('aria-pressed', String(button.dataset.theme === currentTheme()));
+        });
+    }
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const theme = button.dataset.theme ?? 'light';
+            root.dataset.theme = theme;
+            try {
+                localStorage.setItem('weragen-site:theme', theme);
+            } catch {
+                // Хранилище недоступно в приватном режиме, выбор действует до перезагрузки.
+            }
+            refresh();
+        });
+    });
+
+    darkQuery.addEventListener('change', refresh);
+    refresh();
+</script>
+
+<style>
+    .theme {
+        position: fixed;
+        z-index: 100;
+        left: 50%;
+        bottom: 16px;
+        transform: translateX(-50%);
+        display: flex;
+        padding: 6px;
+        background: var(--bg);
+        border: 1px solid var(--fg);
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.2;
+    }
+
+    .theme--development {
+        bottom: 64px;
+    }
+
+    button {
+        padding: 8px 14px;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    button[aria-pressed='true'] {
+        background: var(--fg);
+        color: var(--bg);
+    }
+
+    @media (max-width: 720px) {
+        .theme {
+            bottom: 8px;
+        }
+
+        .theme--development {
+            bottom: 60px;
+        }
+    }
+</style>

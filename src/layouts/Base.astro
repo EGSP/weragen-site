@@ -5,27 +5,19 @@ import '@fontsource/ibm-plex-sans/cyrillic-500.css';
 import '@fontsource/ibm-plex-sans/latin-500.css';
 import '@fontsource/ibm-plex-sans/cyrillic-700.css';
 import '@fontsource/ibm-plex-sans/latin-700.css';
-import '@fontsource/golos-text/cyrillic-400.css';
-import '@fontsource/golos-text/latin-400.css';
-import '@fontsource/golos-text/cyrillic-500.css';
-import '@fontsource/golos-text/latin-500.css';
-import '@fontsource/golos-text/cyrillic-700.css';
-import '@fontsource/golos-text/latin-700.css';
 import '@fontsource/ibm-plex-mono/cyrillic-400.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
 import '@fontsource/ibm-plex-mono/cyrillic-500.css';
 import '@fontsource/ibm-plex-mono/latin-500.css';
 import '../styles/base.css';
-import ReviewBar from '../components/ReviewBar.astro';
+import ThemeSwitch from '../components/ThemeSwitch.astro';
 
 interface Props {
     title: string;
     description: string;
-    /** Номер варианта лендинга. У обзорной страницы его нет. */
-    version?: 1 | 2 | 3;
 }
 
-const { title, description, version } = Astro.props;
+const { title, description } = Astro.props;
 ---
 
 <!doctype html>
@@ -35,31 +27,28 @@ const { title, description, version } = Astro.props;
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
         <meta name="description" content={description} />
-        <!-- Варианты страницы сравниваются между собой и пока не предназначены для поисковиков. -->
+        <!-- Лендинг ещё согласуется и пока не предназначен для поисковиков. -->
         <meta name="robots" content="noindex" />
         <meta name="generator" content={Astro.generator} />
         <!--
-            Шрифт и тема применяются до первой отрисовки, иначе страница мигнула бы
-            оформлением по умолчанию. Значение из адреса (?font=golos&theme=dark) важнее
-            сохранённого, так можно передать ссылку на конкретное сочетание.
+            Тема применяется до первой отрисовки, иначе страница мигнула бы оформлением
+            по умолчанию. Значение из адреса (?theme=dark) важнее сохранённого.
         -->
         <script is:inline>
             (function () {
                 try {
-                    var root = document.documentElement;
-                    var query = new URLSearchParams(location.search);
-                    var font = query.get('font') || localStorage.getItem('weragen-site:font');
-                    var theme = query.get('theme') || localStorage.getItem('weragen-site:theme');
-                    if (font === 'golos' || font === 'plex') root.dataset.font = font;
-                    if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
+                    var theme =
+                        new URLSearchParams(location.search).get('theme') ||
+                        localStorage.getItem('weragen-site:theme');
+                    if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
                 } catch (error) {
-                    // Хранилище недоступно в приватном режиме, остаётся оформление по умолчанию.
+                    // Хранилище недоступно в приватном режиме, остаётся системная тема.
                 }
             })();
         </script>
     </head>
     <body>
         <slot />
-        <ReviewBar version={version} />
+        <ThemeSwitch />
     </body>
 </html>
