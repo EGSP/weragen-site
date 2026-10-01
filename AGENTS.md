@@ -1,22 +1,54 @@
-## Development
+# Инструкция для агентов
 
-When starting the dev server, use background mode:
+Тексты сайта, документация, комментарии в коде и описания коммитов пишутся на русском языке. Идентификаторы в коде, имена веток и метки типа коммита (`feat`, `fix` и т. п.) пишутся латиницей.
 
+## Ветки и worktree
+
+- Ветка `main` публикуется на GitHub Pages при каждом push. Агент в `main` не коммитит и свою ветку в неё не вливает: какую версию публиковать, решает пользователь.
+- Любая работа агента ведётся в его собственном worktree `.worktrees/<агент>`, названном по имени агента: `.worktrees/codex`, `.worktrees/claude`. Основной каталог репозитория остаётся на `main` и принадлежит пользователю: агент в нём не переключает ветки и не меняет файлы. Каталог `.worktrees/` исключён из git.
+- Каждый агент делает собственную версию сайта в своей ветке: `feat/landing/codex`, `feat/landing/claude`. Версии независимы: агент не вливает чужую ветку и не меняет файлы в чужом worktree.
+- Для другой работы агент создаёт в своём worktree отдельную ветку. Имя ветки: `<тип>/<область>/<тема>` латиницей в kebab-case, например `fix/pages/base-path`.
+  - `feat` — новая возможность;
+  - `fix` — исправление ошибки;
+  - `chore` — сборка, зависимости, инструменты;
+  - `docs` — только документация;
+  - `refactor` — изменение структуры кода без изменения поведения.
+- Если worktree агента ещё нет, агент создаёт его один раз и дальше переключает в нём ветки обычной командой `git switch`:
+
+  ```bash
+  git worktree add .worktrees/claude -b feat/landing/claude main
+  ```
+
+  Для существующей ветки её имя указывается без `-b`. В новом worktree нет `node_modules`, поэтому перед работой в нём выполняется `npm install`. Удаляет worktree командой `git worktree remove .worktrees/<агент>` только пользователь или агент по его просьбе.
+- Сообщения коммитов: `<тип>(<область>): описание на русском`, например `feat(landing): раздел о возможностях`.
+- Когда версия готова, агент проверяет её командами `npm run check` и `npm run build`, отправляет свою ветку в `origin` и сообщает пользователю, что сделано и как это посмотреть.
+
+## Сервер разработки
+
+Сервер разработки запускается в фоновом режиме:
+
+```bash
+npx astro dev --background --port <порт>
 ```
-astro dev --background
-```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Порт 4321 остаётся пользователю. У каждого агента свой порт, чтобы обе версии сайта можно было открыть одновременно:
 
-## Documentation
+| Агент | Порт | Адрес |
+|---|---|---|
+| claude | 4331 | <http://localhost:4331/weragen-site/> |
+| codex | 4332 | <http://localhost:4332/weragen-site/> |
 
-Full documentation: https://docs.astro.build
+Фоновым сервером управляют команды `npx astro dev status`, `npx astro dev logs` и `npx astro dev stop`. Когда сервер больше не нужен, агент останавливает его.
 
-Consult these guides before working on related tasks:
+## Документация Astro
 
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+Полная документация: <https://docs.astro.build>
+
+Перед работой над задачей сверяйся с соответствующим руководством:
+
+- [Страницы, динамические маршруты и middleware](https://docs.astro.build/en/guides/routing/)
+- [Компоненты Astro](https://docs.astro.build/en/basics/astro-components/)
+- [Компоненты React, Vue, Svelte и других фреймворков](https://docs.astro.build/en/guides/framework-components/)
+- [Добавление и ведение содержимого](https://docs.astro.build/en/guides/content-collections/)
+- [Стили и Tailwind](https://docs.astro.build/en/guides/styling/)
+- [Поддержка нескольких языков](https://docs.astro.build/en/guides/internationalization/)

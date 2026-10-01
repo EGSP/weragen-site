@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Рабочие каталоги агентов (git worktree)
+.worktrees/

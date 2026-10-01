@@ -13,6 +13,7 @@
 | `src/pages/index.astro` | страница |
 | `astro.config.mjs` | адрес сайта и каталог публикации |
 | `.github/workflows/pages.yml` | сборка и публикация |
+| `AGENTS.md` | правила для агентов: ветки, worktree, сервер разработки |
 
 ## Команды
 
