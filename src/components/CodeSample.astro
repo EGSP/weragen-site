@@ -1,0 +1,46 @@
+---
+/**
+ * Пример обращения программы к платформе.
+ *
+ * Пример условный: API платформы ещё обсуждается. Он опирается только на принятое решение
+ * о совместимости с OpenAI API и на псевдонимы моделей.
+ */
+const lines: { text: string; comment?: boolean }[] = [
+    { text: 'from openai import OpenAI' },
+    { text: '' },
+    { text: '# Адрес weragen внутри организации вместо адреса провайдера', comment: true },
+    { text: 'client = OpenAI(base_url="http://weragen.local/v1", api_key=KEY)' },
+    { text: '' },
+    { text: 'reply = client.chat.completions.create(' },
+    { text: '    # Псевдоним, а не название модели', comment: true },
+    { text: '    model="fast",' },
+    { text: '    messages=[{' },
+    { text: '        "role": "user",' },
+    { text: '        "content": "Определи категорию обращения",' },
+    { text: '    }],' },
+    { text: ')' },
+];
+
+const escape = (text: string): string =>
+    text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// Разметка собирается строкой: фигурные скобки примера в шаблоне Astro были бы выражением.
+const html = lines
+    .map((line) => (line.comment === true ? `<span class="comment">${escape(line.text)}</span>` : escape(line.text)))
+    .join('\n');
+---
+
+<pre class="code mono"><code set:html={html} /></pre>
+
+<style>
+    .code {
+        overflow-x: auto;
+        font-size: 13px;
+        line-height: 21px;
+        tab-size: 4;
+    }
+
+    .code :global(.comment) {
+        color: var(--muted);
+    }
+</style>

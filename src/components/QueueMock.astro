@@ -1,0 +1,137 @@
+---
+/**
+ * Условный вид очереди запросов и занятых квот. Названия программ и числа вымышлены:
+ * они показывают, что платформа видит запросы всех программ одновременно.
+ */
+const requests = [
+    { program: 'Советник оператора', alias: 'smart', state: 'исполняется', mark: 'run' },
+    { program: 'Разбор обращений', alias: 'fast', state: 'исполняется', mark: 'run' },
+    { program: 'Сверка накладных', alias: 'medium', state: 'в очереди', mark: 'wait' },
+    { program: 'Ночной отчёт', alias: 'smart', state: 'отложен, ответ сохранён', mark: 'done' },
+];
+
+const quotas = [
+    { name: 'Провайдер Yandex', value: 70, text: '42 из 60 запросов в минуту' },
+    { name: 'Локальный сервер', value: 100, text: '2 из 2 одновременных запросов' },
+];
+---
+
+<div class="queue mono">
+    <ul class="queue__list">
+        {
+            requests.map((request) => (
+                <li>
+                    <span class="queue__program">{request.program}</span>
+                    <span class="queue__alias">{request.alias}</span>
+                    <span class={`queue__state queue__state--${request.mark}`}>{request.state}</span>
+                </li>
+            ))
+        }
+    </ul>
+    <dl class="queue__quotas">
+        {
+            quotas.map((quota) => (
+                <div>
+                    <dt>{quota.name}</dt>
+                    <dd>
+                        <span class="queue__meter" style={`--value: ${quota.value}%`} />
+                        <span class="queue__meter-text">{quota.text}</span>
+                    </dd>
+                </div>
+            ))
+        }
+    </dl>
+</div>
+
+<style>
+    .queue {
+        container-type: inline-size;
+        font-size: 13px;
+        line-height: 20px;
+    }
+
+    .queue__list li {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1.1fr);
+        gap: 0 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .queue__list li:first-child {
+        padding-top: 0;
+    }
+
+    .queue__alias {
+        color: var(--muted);
+    }
+
+    .queue__state {
+        position: relative;
+        padding-left: 18px;
+    }
+
+    /* Состояние показано формой отметки, а не цветом: оформление остаётся чёрно-белым. */
+    .queue__state::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 6px;
+        width: 8px;
+        height: 8px;
+        border: 1px solid var(--fg);
+    }
+
+    .queue__state--run::before {
+        background: var(--fg);
+    }
+
+    .queue__state--done::before {
+        background: linear-gradient(135deg, var(--fg) 50%, transparent 50%);
+    }
+
+    .queue__quotas {
+        display: grid;
+        gap: 12px;
+        padding-top: 14px;
+    }
+
+    .queue__quotas dt {
+        color: var(--muted);
+    }
+
+    .queue__quotas dd {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 4px 12px;
+    }
+
+    .queue__meter {
+        position: relative;
+        height: 8px;
+        border: 1px solid var(--fg);
+    }
+
+    .queue__meter::after {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--value);
+        background: var(--fg);
+    }
+
+    @container (max-width: 440px) {
+        .queue__list li {
+            grid-template-columns: minmax(0, 1fr) auto;
+        }
+
+        .queue__state {
+            grid-column: 1 / -1;
+        }
+
+        .queue__quotas dd {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

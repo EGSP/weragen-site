@@ -1,0 +1,110 @@
+---
+/**
+ * Условная таблица псевдонимов моделей. Названия моделей намеренно общие: показано
+ * устройство таблицы, а не рекомендация конкретных моделей.
+ */
+const rows = [
+    { alias: 'smart', needs: 'рассуждение, вызов инструментов', target: 'Yandex, большая модель' },
+    { alias: 'medium', needs: 'вызов инструментов', target: 'Сбер, средняя модель' },
+    { alias: 'fast', needs: 'без требований', target: 'локальная модель' },
+];
+---
+
+<div class="alias mono">
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">Псевдоним</th>
+                <th scope="col">Требования</th>
+                <th scope="col">Сейчас это</th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                rows.map((row) => (
+                    <tr>
+                        <th scope="row">{row.alias}</th>
+                        <td data-label="Требования">{row.needs}</td>
+                        <td data-label="Сейчас это">{row.target}</td>
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .alias {
+        container-type: inline-size;
+        font-size: 13px;
+        line-height: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 9px 12px 9px 0;
+        text-align: left;
+        vertical-align: top;
+        font-weight: 400;
+        border-bottom: 1px solid var(--line);
+    }
+
+    thead th {
+        padding-top: 0;
+        color: var(--muted);
+    }
+
+    tbody th {
+        font-weight: 500;
+    }
+
+    tbody tr:last-child > * {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    /* В узкой рамке строка таблицы становится блоком с подписями полей. */
+    @container (max-width: 440px) {
+        thead {
+            display: none;
+        }
+
+        table,
+        tbody,
+        tr,
+        th,
+        td {
+            display: block;
+        }
+
+        tbody tr {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        tbody tr:first-child {
+            padding-top: 0;
+        }
+
+        tbody tr:last-child {
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+        th,
+        td {
+            padding: 0;
+            border: 0;
+        }
+
+        td::before {
+            content: attr(data-label) ': ';
+            color: var(--muted);
+        }
+    }
+</style>

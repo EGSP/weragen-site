@@ -1,0 +1,222 @@
+/*
+ * Общая основа трёх версий лендинга: переменные, сброс и элементы, одинаковые везде.
+ *
+ * Оформление чёрно-белое. Цвета заданы переменными, поэтому тёмная тема получается
+ * заменой значений, а не отдельными правилами. Шрифт текста тоже переменная: панель
+ * проверки переключает его между IBM Plex Sans и Golos Text, не трогая остальные стили.
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --font-plex: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-golos: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-sans: var(--font-plex);
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+    --bg: #ffffff;
+    --fg: #0c0c0c;
+    --muted: #575757;
+    --faint: #8c8c8c;
+    --line: #e2e2e2;
+    --surface: #f5f5f5;
+    /* Перевёрнутые разделы: тёмный блок на светлой странице и наоборот. */
+    --invert-bg: #0c0c0c;
+    --invert-fg: #f5f5f5;
+    --invert-muted: #a8a8a8;
+    --invert-line: #2e2e2e;
+
+    --gutter: 20px;
+    --container: 1200px;
+    --radius: 0px;
+    /*
+     * Наибольший размер главного заголовка, при котором неразрывная строка
+     * «для ИИ-автоматизаций» помещается в ширину страницы. Строка занимает около 11em
+     * в обоих шрифтах, делитель взят с запасом.
+     */
+    --title-fit: calc((100vw - 2 * var(--gutter)) / 11.4);
+
+    color-scheme: light;
+}
+
+:root[data-font='golos'] {
+    --font-sans: var(--font-golos);
+}
+
+/* Тёмная тема берётся из настроек системы, пока она не выбрана на панели проверки. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --bg: #0b0b0b;
+        --fg: #ededed;
+        --muted: #a6a6a6;
+        --faint: #737373;
+        --line: #262626;
+        --surface: #151515;
+        --invert-bg: #ededed;
+        --invert-fg: #0b0b0b;
+        --invert-muted: #4d4d4d;
+        --invert-line: #cfcfcf;
+        color-scheme: dark;
+    }
+}
+
+:root[data-theme='dark'] {
+    --bg: #0b0b0b;
+    --fg: #ededed;
+    --muted: #a6a6a6;
+    --faint: #737373;
+    --line: #262626;
+    --surface: #151515;
+    --invert-bg: #ededed;
+    --invert-fg: #0b0b0b;
+    --invert-muted: #4d4d4d;
+    --invert-line: #cfcfcf;
+    color-scheme: dark;
+}
+
+@media (min-width: 768px) {
+    :root {
+        --gutter: 40px;
+    }
+}
+
+html {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Место под панель проверки, чтобы она не закрывала конец страницы. */
+    padding-bottom: 96px;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+pre,
+table {
+    margin: 0;
+}
+
+ul,
+ol {
+    padding: 0;
+    list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 600;
+    text-wrap: balance;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+.container {
+    width: min(100% - 2 * var(--gutter), var(--container));
+    margin-inline: auto;
+}
+
+.mono {
+    font-family: var(--font-mono);
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 0 22px;
+    border: 1px solid var(--fg);
+    border-radius: var(--button-radius, var(--radius));
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        background-color 0.15s,
+        color 0.15s;
+}
+
+.button--solid {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+.button--solid:hover {
+    background: transparent;
+    color: var(--fg);
+}
+
+.button--outline:hover {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    * {
+        transition: none !important;
+    }
+}

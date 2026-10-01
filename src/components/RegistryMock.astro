@@ -1,0 +1,56 @@
+---
+/**
+ * Условный перечень того, что подключено к платформе: серверы MCP, навыки и агенты
+ * с числом программ, которым они доступны. Названия вымышлены.
+ */
+const rows = [
+    { kind: 'MCP', name: 'Графики производства', access: '3 программы' },
+    { kind: 'MCP', name: 'Учётная система', access: '2 программы' },
+    { kind: 'навык', name: 'Сверка документов', access: '2 программы' },
+    { kind: 'навык', name: 'Разбор обращений', access: '1 программа' },
+    { kind: 'агент', name: 'Аналитик графиков', access: '1 программа' },
+];
+---
+
+<div class="registry mono">
+    <ul>
+        {
+            rows.map((row) => (
+                <li>
+                    <span class="registry__kind">{row.kind}</span>
+                    <span>{row.name}</span>
+                    <span class="registry__access">{row.access}</span>
+                </li>
+            ))
+        }
+    </ul>
+</div>
+
+<style>
+    .registry {
+        font-size: 13px;
+        line-height: 20px;
+    }
+
+    li {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr) auto;
+        gap: 0 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    li:first-child {
+        padding-top: 0;
+    }
+
+    li:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .registry__kind,
+    .registry__access {
+        color: var(--muted);
+    }
+</style>

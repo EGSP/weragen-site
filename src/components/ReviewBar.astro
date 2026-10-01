@@ -1,0 +1,186 @@
+---
+import { withBase } from '../lib/url';
+
+/**
+ * Панель проверки: переход между версиями страницы, выбор шрифта и темы.
+ *
+ * Панель нужна только на время сравнения версий и в опубликованный сайт не войдёт.
+ * Выбор шрифта и темы хранится в браузере, поэтому сохраняется при переходе между версиями.
+ */
+interface Props {
+    version?: 1 | 2 | 3;
+}
+
+const { version } = Astro.props;
+
+const versions = [
+    { number: 1, name: 'Лист' },
+    { number: 2, name: 'Витрина' },
+    { number: 3, name: 'Хаб' },
+] as const;
+
+// Сервер разработки показывает внизу по центру панель инструментов Astro. Панель проверки
+// при нём поднимается выше, иначе одна панель закрывала бы другую.
+const development = import.meta.env.DEV;
+---
+
+<aside class:list={['review', 'mono', { 'review--development': development }]} aria-label="Панель проверки">
+    <div class="review__group">
+        <span class="review__label">Версия</span>
+        <div class="review__options">
+            {
+                versions.map((item) => (
+                    <a
+                        href={withBase(`/v${item.number}/`)}
+                        aria-current={item.number === version ? 'page' : undefined}
+                    >
+                        {item.number} {item.name}
+                    </a>
+                ))
+            }
+        </div>
+    </div>
+    <div class="review__group">
+        <span class="review__label">Шрифт</span>
+        <div class="review__options">
+            <button type="button" data-font="plex" aria-pressed="false">IBM Plex</button>
+            <button type="button" data-font="golos" aria-pressed="false">Golos</button>
+        </div>
+    </div>
+    <div class="review__group">
+        <span class="review__label">Тема</span>
+        <div class="review__options">
+            <button type="button" data-theme="light" aria-pressed="false">светлая</button>
+            <button type="button" data-theme="dark" aria-pressed="false">тёмная</button>
+        </div>
+    </div>
+</aside>
+
+<script>
+    const root = document.documentElement;
+    const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function save(key: string, value: string): void {
+        try {
+            localStorage.setItem(`weragen-site:${key}`, value);
+        } catch {
+            // Хранилище недоступно в приватном режиме: выбор действует до перезагрузки.
+        }
+    }
+
+    function currentFont(): string {
+        return root.dataset.font ?? 'plex';
+    }
+
+    /** Пока тема не выбрана, действует системная: кнопка отмечает именно её. */
+    function currentTheme(): string {
+        return root.dataset.theme ?? (darkQuery.matches ? 'dark' : 'light');
+    }
+
+    function refresh(): void {
+        document.querySelectorAll<HTMLButtonElement>('.review [data-font]').forEach((button) => {
+            button.setAttribute('aria-pressed', String(button.dataset.font === currentFont()));
+        });
+        document.querySelectorAll<HTMLButtonElement>('.review [data-theme]').forEach((button) => {
+            button.setAttribute('aria-pressed', String(button.dataset.theme === currentTheme()));
+        });
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.review [data-font]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const font = button.dataset.font ?? 'plex';
+            root.dataset.font = font;
+            save('font', font);
+            refresh();
+        });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('.review [data-theme]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const theme = button.dataset.theme ?? 'light';
+            root.dataset.theme = theme;
+            save('theme', theme);
+            refresh();
+        });
+    });
+
+    darkQuery.addEventListener('change', refresh);
+    refresh();
+</script>
+
+<style>
+    .review {
+        position: fixed;
+        z-index: 100;
+        left: 50%;
+        bottom: 16px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px 18px;
+        width: max-content;
+        max-width: calc(100% - 24px);
+        padding: 8px 12px;
+        background: var(--bg);
+        border: 1px solid var(--fg);
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+    .review--development {
+        bottom: 64px;
+    }
+
+    .review__group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .review__label {
+        color: var(--muted);
+    }
+
+    .review__options {
+        display: flex;
+        border: 1px solid var(--line);
+    }
+
+    .review__options > * {
+        padding: 5px 9px;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .review__options > * + * {
+        border-left: 1px solid var(--line);
+    }
+
+    .review__options > [aria-current='page'],
+    .review__options > [aria-pressed='true'] {
+        background: var(--fg);
+        color: var(--bg);
+    }
+
+    .review__options > :not([aria-current='page']):not([aria-pressed='true']):hover {
+        background: var(--surface);
+    }
+
+    @media (max-width: 720px) {
+        .review {
+            bottom: 8px;
+            gap: 6px 12px;
+            padding: 6px 8px;
+            font-size: 11px;
+        }
+
+        .review--development {
+            bottom: 60px;
+        }
+
+        .review__label {
+            display: none;
+        }
+    }
+</style>

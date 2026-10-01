@@ -1,0 +1,138 @@
+---
+/**
+ * Условный вид журнала: одно исполнение воркфлоу с шагами, вызовами инструментов
+ * и запросами к моделям. Данные вымышлены и повторяют пример «Советник оператора».
+ */
+const run = { title: 'Воркфлоу «Советник оператора»', state: 'завершён', time: '48 с' };
+
+const steps = [
+    { name: 'Шаг 1. Сбор данных', kind: 'программа на Python', time: '12 с', children: [] },
+    {
+        name: 'Шаг 2. Анализ графиков',
+        kind: 'агент',
+        time: '31 с',
+        children: [
+            'запрос к модели smart',
+            'инструмент «чтение графика»',
+            'инструмент «сравнение периодов»',
+            'запрос к модели smart',
+        ],
+    },
+    { name: 'Шаг 3. Заключение', kind: 'ответ в JSON по схеме', time: '5 с', children: [] },
+];
+---
+
+<div class="journal mono">
+    <div class="journal__run">
+        <span class="journal__title">{run.title}</span>
+        <span class="journal__meta">{run.state}, {run.time}</span>
+    </div>
+    <ul class="tree">
+        {
+            steps.map((step) => (
+                <li>
+                    <div class="tree__row">
+                        <span class="tree__name">{step.name}</span>
+                        <span class="tree__kind">{step.kind}</span>
+                        <span class="tree__time">{step.time}</span>
+                    </div>
+                    {step.children.length > 0 && (
+                        <ul class="tree tree--nested">
+                            {step.children.map((child) => (
+                                <li>
+                                    <div class="tree__row tree__row--leaf">{child}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </li>
+            ))
+        }
+    </ul>
+</div>
+
+<style>
+    .journal {
+        container-type: inline-size;
+        font-size: 13px;
+        line-height: 20px;
+    }
+
+    .journal__run {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 2px 16px;
+        padding-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .journal__meta {
+        color: var(--muted);
+        font-weight: 400;
+    }
+
+    .tree {
+        margin-left: 5px;
+    }
+
+    .tree > li {
+        position: relative;
+        padding-left: 22px;
+    }
+
+    /* Вертикальная линия дерева. У последнего узла она обрывается на уровне строки. */
+    .tree > li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        border-left: 1px solid var(--faint);
+    }
+
+    .tree > li:last-child::before {
+        bottom: auto;
+        height: 14px;
+    }
+
+    .tree > li::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 14px;
+        width: 14px;
+        border-top: 1px solid var(--faint);
+    }
+
+    .tree__row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto 44px;
+        gap: 0 16px;
+        padding: 4px 0;
+    }
+
+    .tree__kind,
+    .tree__row--leaf {
+        color: var(--muted);
+    }
+
+    .tree__time {
+        text-align: right;
+    }
+
+    .tree__row--leaf {
+        display: block;
+    }
+
+    @container (max-width: 430px) {
+        .tree__row {
+            grid-template-columns: minmax(0, 1fr) 44px;
+        }
+
+        .tree__kind {
+            grid-column: 1;
+            grid-row: 2;
+        }
+    }
+</style>
