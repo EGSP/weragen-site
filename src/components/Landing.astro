@@ -1,0 +1,36 @@
+---
+import Hub from './Hub.astro';
+/** Три композиции одной продуктовой концепции с одинаковыми смысловыми разделами. */
+interface Props { version: number }
+const { version } = Astro.props;
+const benefits = [
+  { number: '01', title: 'Меняйте модель,\nа не программу', description: 'Программа обращается к модели по имени: smart, medium или fast. Провайдера и конкретную модель вы выбираете в платформе.', detail: 'Модели и провайдеры', symbol: '↔' },
+  { number: '02', title: 'Управляйте\nобщей нагрузкой', description: 'Лимиты и очередь запросов общие для автоматизаций. Параллельным процессам не приходится отдельно договариваться с каждым провайдером.', detail: 'Квоты и очередь', symbol: '≋' },
+  { number: '03', title: 'Подключайте\nинструменты один раз', description: 'Агенты, навыки и серверы MCP собраны в одном месте. Используйте их в разных процессах и смотрите историю исполнения в общем журнале.', detail: 'Агенты и инструменты', symbol: '⊞' },
+];
+const heading = version === 1 ? ['Работа с ИИ.', 'В одном месте.'] : version === 2 ? ['Ваш код.', 'Ваши модели.', 'Общий порядок.'] : ['Отдельные программы.', 'Общая платформа.'];
+---
+<div class:list={['landing', `composition-${version}`]}>
+  <section class="hero" aria-labelledby={`hero-title-${version}`}>
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="small-cross" aria-hidden="true">+</span> Открытая платформа для ИИ-автоматизаций</p>
+      <h1 id={`hero-title-${version}`}>{heading.map((line, index) => <span class:list={{ 'muted-heading': index === heading.length - 1 }}>{line}</span>)}</h1>
+      <p class="hero-description">Объедините модели, агентов и инструменты внутри организации. Пишите логику в своих программах, а доступ к ИИ, нагрузку и историю исполнения передайте weragen.</p>
+      <div class="hero-actions"><a class="button button-dark" href="#platform">Изучить платформу <span aria-hidden="true">↓</span></a><a class="text-link" href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">Посмотреть код <span aria-hidden="true">↗</span></a></div>
+      <p class="development-note"><span class="status-dot"></span> В разработке · Открытый код · Развёртывание у себя</p>
+    </div>
+    {version !== 2 && <Hub compact={version === 3} />}
+    {version === 2 && <div class="type-illustration" aria-hidden="true"><div class="type-line"><span>программы</span><span>агенты</span><span>инструменты</span></div><div class="type-connectors">↓<span>↓</span>↓</div><div class="type-center">weragen<span>Общий доступ к моделям и история работы</span></div></div>}
+    <div class="hero-bottom"><span>Создана для разработчиков и команд</span><span>01 / Платформа под вашим управлением <span aria-hidden="true">↘</span></span></div>
+  </section>
+  <section class="platform-section" id={version === 1 ? 'platform' : `platform-${version}`} data-anchor="platform" aria-labelledby={`platform-title-${version}`}>
+    <div class="section-introduction"><p class="eyebrow">01 / Возможности</p><div><h2 id={`platform-title-${version}`}>Меньше повторяющейся работы.<br/><span class="muted-heading">Больше внимания своей задаче.</span></h2><p>Подключения, квоты и инструменты не должны заново появляться в каждой автоматизации. В weragen они становятся общей основой для ваших процессов.</p></div></div>
+    <div class="benefit-grid">{benefits.map(benefit => <article class="benefit"><div class="benefit-top"><span>{benefit.number}</span><span class="benefit-symbol" aria-hidden="true">{benefit.symbol}</span></div><h3>{benefit.title.split('\n').map(line => <span>{line}</span>)}</h3><p>{benefit.description}</p><div class="benefit-detail">{benefit.detail}<span aria-hidden="true">↗</span></div></article>)}</div>
+    <div class="history-strip"><span class="history-label">Одна история процесса</span><div><span>Шаг программы</span><span aria-hidden="true">→</span><span>Действие агента</span><span aria-hidden="true">→</span><span>Запрос к модели</span></div></div>
+  </section>
+  <section class="approach-section" id={version === 1 ? 'approach' : `approach-${version}`} data-anchor="approach" aria-labelledby={`approach-title-${version}`}>
+    <div class="approach-heading"><p class="eyebrow">02 / Подход</p><h2 id={`approach-title-${version}`}>Логика остаётся у вас.<br/><span class="muted-heading">Платформа связывает её с ИИ.</span></h2><p>Используйте привычный язык и свою инфраструктуру. weragen объединяет работу программ через общий API.</p></div>
+    <div class="approach-content"><div class="approach-row"><span class="row-number">01</span><div><h3>Разверните внутри организации</h3><p>Платформа работает на вашей инфраструктуре. Вы выбираете локальные модели или внешних провайдеров и решаете, какие данные им отправлять.</p></div><span aria-hidden="true">↗</span></div><div class="approach-row"><span class="row-number">02</span><div><h3>Подключите свои программы</h3><p>Исполнитель может быть отдельным сервисом или процессом, который запускает платформа. Язык программирования выбираете вы; связь задаётся контрактом API.</p></div><span aria-hidden="true">↗</span></div><div class="approach-row"><span class="row-number">03</span><div><h3>Развивайте процессы вместе с платформой</h3><p>В основе концепции общий доступ к моделям, агентам и инструментам. Поддержка и помощь с внедрением дополняют платформу с открытым кодом.</p></div><span aria-hidden="true">↗</span></div></div>
+    <div class="closing"><div><p class="eyebrow">Проект с открытым кодом</p><h3>Начните с устройства платформы.</h3><p>weragen развивается. Исходный код и ход работы доступны в репозитории.</p></div><a class="button button-dark" href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">Открыть репозиторий <span aria-hidden="true">↗</span></a></div>
+  </section>
+</div>

@@ -1,0 +1,17 @@
+---
+/** Схема концепции платформы. Она иллюстрирует связи, а не состояние работающего сервера. */
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<div class:list={['hub-illustration', { compact }]}>
+  <div class="diagram-caption"><span>Устройство платформы</span><span aria-hidden="true">↗</span></div>
+  <svg viewBox="0 0 580 410" role="img" aria-label="Программы и сервисы подключаются к weragen. Платформа объединяет модели, агентов, процессы и инструменты MCP.">
+    <defs><pattern id={compact ? 'dots-compact' : 'dots'} width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.65" fill="#c8c8c4" /></pattern></defs>
+    <rect width="580" height="410" fill={`url(#${compact ? 'dots-compact' : 'dots'})`} />
+    <g fill="none" stroke="#92928c" stroke-width="1"><path d="M290 91V162M290 242V319M184 202H109M396 202H471" /><path d="M184 183H150V78H214M396 221H430V332H366" /><circle cx="290" cy="134" r="3" fill="#fafaf8"/><circle cx="290" cy="276" r="3" fill="#fafaf8"/></g>
+    <g class="diagram-node"><rect x="214" y="39" width="152" height="52"/><text x="290" y="70">Модели</text><rect x="32" y="176" width="77" height="52"/><text x="70" y="207">MCP</text><rect x="471" y="176" width="77" height="52"/><text x="510" y="207">Агенты</text><rect x="214" y="319" width="152" height="52"/><text x="290" y="350">Процессы</text></g>
+    <rect class="diagram-center" x="184" y="162" width="212" height="80"/>
+    <text class="diagram-brand" x="290" y="211">weragen.</text>
+    <text class="diagram-note" x="290" y="395">Ваши программы · Общий API · Ваша инфраструктура</text>
+  </svg>
+</div>

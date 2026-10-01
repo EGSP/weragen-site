@@ -6,4 +6,5 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
     site: 'https://egsp.github.io',
     base: '/weragen-site',
+    devToolbar: { enabled: false },
 });

@@ -1,11 +1,93 @@
+---
+import Landing from '../components/Landing.astro';
+import '../styles/landing.css';
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/cyrillic-400.css';
+import '@fontsource/ibm-plex-sans/latin-500.css';
+import '@fontsource/ibm-plex-sans/cyrillic-500.css';
+import '@fontsource/golos-text/latin-400.css';
+import '@fontsource/golos-text/cyrillic-400.css';
+import '@fontsource/golos-text/latin-500.css';
+import '@fontsource/golos-text/cyrillic-500.css';
+const versions = ['Сетка', 'Типографика', 'Схема'];
+---
 <!doctype html>
-<html lang="ru">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>weragen</title>
-    </head>
-    <body>
-        <h1>weragen</h1>
-    </body>
+<html lang="ru" data-font="ibm" data-version="1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="weragen: открытая платформа для ИИ-автоматизаций. Модели, агенты, инструменты и процессы в одном месте, внутри вашей организации." />
+    <meta name="theme-color" content="#fafaf8" />
+    <title>weragen · Открытая платформа для ИИ-автоматизаций</title>
+    <link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">К содержанию</a>
+    <div class="preview-bar" aria-label="Настройки просмотра">
+      <span class="preview-label"><span class="status-dot"></span> Эскизы лендинга</span>
+      <div class="preview-controls">
+        <div class="control-group" role="group" aria-label="Вариант сайта">
+          <span class="control-label">Вариант</span>
+          {versions.map((name, index) => <button type="button" data-select-version={index + 1} aria-pressed={index === 0} aria-label={`${index + 1}. ${name}`}><span class="control-number">0{index + 1}</span> {name}</button>)}
+        </div>
+        <div class="control-group" role="group" aria-label="Шрифт">
+          <span class="control-label">Шрифт</span>
+          <button type="button" data-select-font="ibm" aria-pressed="true">IBM Plex</button>
+          <button type="button" data-select-font="golos" aria-pressed="false">Golos</button>
+        </div>
+      </div>
+    </div>
+    <header class="site-header">
+      <a class="wordmark" href="#content" aria-label="weragen, начало страницы"><span class="brand-symbol" aria-hidden="true">w</span>weragen<span class="brand-point">.</span></a>
+      <nav aria-label="Основная навигация"><a href="#platform">Платформа</a><a href="#approach">Подход</a><a class="header-source" href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">Исходный код <span aria-hidden="true">↗</span></a></nav>
+    </header>
+    <main id="content">
+      {[1, 2, 3].map(version => <div data-landing={version} hidden={version !== 1}><Landing version={version} /></div>)}
+    </main>
+    <footer class="site-footer"><a class="wordmark" href="#content">weragen.</a><span>Открытая платформа. Собственная инфраструктура.</span><a href="https://github.com/EGSP/weragen" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a></footer>
+    <div class="sr-only" role="status" aria-live="polite" id="preview-status"></div>
+    <noscript><p class="no-script">Чтобы сравнить варианты и шрифты, включите JavaScript. Сейчас открыт первый вариант.</p></noscript>
+    <script>
+      const versionButtons = document.querySelectorAll<HTMLButtonElement>('[data-select-version]');
+      const fontButtons = document.querySelectorAll<HTMLButtonElement>('[data-select-font]');
+      const landings = document.querySelectorAll<HTMLElement>('[data-landing]');
+      const status = document.querySelector<HTMLElement>('#preview-status');
+
+      /** Применяет известные варианты из адреса; скрытые лендинги исключаются из навигации с клавиатуры. */
+      function applyPreview() {
+        const parameters = new URL(location.href).searchParams;
+        const requestedVersion = parameters.get('version');
+        const version = requestedVersion && ['1', '2', '3'].includes(requestedVersion) ? requestedVersion : '1';
+        const font = parameters.get('font') === 'golos' ? 'golos' : 'ibm';
+        document.documentElement.dataset.version = version;
+        document.documentElement.dataset.font = font;
+        landings.forEach(landing => {
+          const active = landing.dataset.landing === version;
+          landing.hidden = !active;
+          // Нативные якоря принадлежат видимой версии; без JavaScript они работают в первой.
+          landing.querySelectorAll<HTMLElement>('[data-anchor]').forEach(section => {
+            section.id = active ? section.dataset.anchor ?? '' : `${section.dataset.anchor}-${landing.dataset.landing}`;
+          });
+        });
+        versionButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.selectVersion === version)));
+        fontButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.selectFont === font)));
+        if (status) status.textContent = `Вариант ${version}. Шрифт ${font === 'ibm' ? 'IBM Plex Sans' : 'Golos Text'}.`;
+      }
+
+      /** Сохраняет выбор в адресе, чтобы ссылку на конкретное сочетание можно было открыть повторно. */
+      function selectPreview(parameter: string, value: string) {
+        const address = new URL(location.href);
+        address.searchParams.set(parameter, value);
+        // Старый якорь мог бы переместить читателя в середину новой композиции.
+        if (parameter === 'version') address.hash = '';
+        history.pushState(null, '', address);
+        applyPreview();
+        if (parameter === 'version') window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+      versionButtons.forEach(button => button.addEventListener('click', () => selectPreview('version', button.dataset.selectVersion ?? '1')));
+      fontButtons.forEach(button => button.addEventListener('click', () => selectPreview('font', button.dataset.selectFont ?? 'ibm')));
+      window.addEventListener('popstate', applyPreview);
+      applyPreview();
+    </script>
+  </body>
 </html>
