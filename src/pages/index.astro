@@ -1,7 +1,7 @@
 ---
-import ArticleLanding from '../components/ArticleLanding.astro';
-import DeveloperLanding from '../components/DeveloperLanding.astro';
-import PlatformLanding from '../components/PlatformLanding.astro';
+import VariantOneLanding from '../components/VariantOneLanding.astro';
+import VariantTwoLanding from '../components/VariantTwoLanding.astro';
+import VariantThreeLanding from '../components/VariantThreeLanding.astro';
 import '../styles/landing.css';
 import '@fontsource/ibm-plex-sans/latin-400.css';
 import '@fontsource/ibm-plex-sans/cyrillic-400.css';
@@ -11,7 +11,7 @@ import '@fontsource/golos-text/latin-400.css';
 import '@fontsource/golos-text/cyrillic-400.css';
 import '@fontsource/golos-text/latin-700.css';
 import '@fontsource/golos-text/cyrillic-700.css';
-const versions = ['Статья', 'Разработчикам', 'Платформа'];
+const versions = ['Вариант 1', 'Вариант 2', 'Вариант 3'];
 ---
 <!doctype html>
 <html lang="ru" data-font="ibm" data-version="3">
@@ -35,12 +35,12 @@ const versions = ['Статья', 'Разработчикам', 'Платфор�
         </div>
     </div>
     <main id="content">
-      <div data-landing="1" hidden><ArticleLanding /></div>
-      <div data-landing="2" hidden><DeveloperLanding /></div>
-      <div data-landing="3"><PlatformLanding /></div>
+      <div data-landing="1" hidden><VariantOneLanding /></div>
+      <div data-landing="2" hidden><VariantTwoLanding /></div>
+      <div data-landing="3"><VariantThreeLanding /></div>
     </main>
     <div class="sr-only" role="status" aria-live="polite" id="preview-status"></div>
-    <noscript><p class="no-script">Для переключения вариантов нужен JavaScript. Сейчас открыт вариант Платформа.</p></noscript>
+    <noscript><p class="no-script">Для переключения вариантов нужен JavaScript. Сейчас открыт Вариант 3.</p></noscript>
     <script>
       const versionButtons = document.querySelectorAll<HTMLButtonElement>('[data-select-version]');
       const fontButtons = document.querySelectorAll<HTMLButtonElement>('[data-select-font]');
@@ -58,7 +58,7 @@ const versions = ['Статья', 'Разработчикам', 'Платфор�
         landings.forEach(landing => {
           const active = landing.dataset.landing === version;
           landing.hidden = !active;
-          // Нативные якоря принадлежат видимой версии; без JavaScript открыт вариант Платформа.
+          // Нативные якоря принадлежат видимой версии; без JavaScript открыт Вариант 3.
           landing.querySelectorAll<HTMLElement>('[data-anchor]').forEach(section => {
             section.id = active ? section.dataset.anchor ?? '' : `${section.dataset.anchor}-${landing.dataset.landing}`;
           });
